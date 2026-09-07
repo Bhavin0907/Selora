@@ -83,21 +83,6 @@ export interface NetFlowTrendPoint {
 }
 
 /**
- * Realistic sample week dataset demonstrating cumulative savings vs spends and net flow.
- * Shows an initial savings lead, mid-week dip below zero, and weekend recovery to highlight
- * Recharts zero reference line and multi-line trends.
- */
-export const SAMPLE_WEEK_NET_FLOW: NetFlowTrendPoint[] = [
-  { label: 'Mon', date: 'Mon', savings: 1200, spends: 450, netFlow: 750 },
-  { label: 'Tue', date: 'Tue', savings: 1200, spends: 980, netFlow: 220 },
-  { label: 'Wed', date: 'Wed', savings: 2000, spends: 1450, netFlow: 550 },
-  { label: 'Thu', date: 'Thu', savings: 2000, spends: 2100, netFlow: -100 },
-  { label: 'Fri', date: 'Fri', savings: 2500, spends: 2850, netFlow: -350 },
-  { label: 'Sat', date: 'Sat', savings: 4200, spends: 3400, netFlow: 800 },
-  { label: 'Sun', date: 'Sun', savings: 4500, spends: 3750, netFlow: 750 },
-]
-
-/**
  * Computes cumulative savings, spends, and net flow series for the selected range.
  * In 'week': 7 daily buckets (Mon-Sun).
  * In 'month': weekly milestone buckets (W1-W5).

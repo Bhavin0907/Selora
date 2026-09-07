@@ -25,7 +25,6 @@ import {
   getOrderedWeekdaySpending,
   getSpendCategoryShare,
   groupByField,
-  SAMPLE_WEEK_NET_FLOW,
 } from '../lib/stats'
 import { getSavingsGrowthWithLevelMarkers } from '../lib/level'
 import { getDepositCalendarGrid } from '../lib/streak'
@@ -48,7 +47,6 @@ const AXIS_TICK_SOFT = { fill: '#43301a99', fontSize: 10, fontFamily: 'var(--fon
 
 export function InsightsPage() {
   const [range, setRange] = useState<TimeRange>('week')
-  const [showSampleWeek, setShowSampleWeek] = useState(true)
   const reduced = useReducedMotion()
   const spends = useStore((s) => s.spends)
   const savings = useStore((s) => s.savings)
@@ -77,9 +75,6 @@ export function InsightsPage() {
     () => getNetFlowTrendSeries(spends, savings, range),
     [spends, savings, range],
   )
-
-  const isShowingSample = range === 'week' && showSampleWeek
-  const activeNetFlowData = isShowingSample ? SAMPLE_WEEK_NET_FLOW : netFlowTrendData
 
   // 5. Category Share Donut data
   const categoryShareData = useMemo(
@@ -161,66 +156,22 @@ export function InsightsPage() {
       {/* 1. NET FLOW TREND (LINE CHART) */}
       <Card glow="green">
         <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold text-heal-green">Net Flow Trend</h2>
-            {isShowingSample && (
-              <span className="font-pixel text-[0.4rem] bg-heal-green/20 text-heal-green px-1.5 py-0.5 border border-heal-green/40">
-                SAMPLE
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            {range === 'week' && (
-              <div className="flex bg-vault-indigo-light p-0.5 shadow-[0_0_0_1px_#3a2410]">
-                <button
-                  type="button"
-                  onClick={() => setShowSampleWeek(true)}
-                  className={`px-2 py-0.5 font-pixel text-[0.45rem] transition-all cursor-pointer ${
-                    showSampleWeek
-                      ? 'bg-soul-violet text-[#fff7e0]'
-                      : 'text-ink/60 hover:text-ink'
-                  }`}
-                >
-                  SAMPLE
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowSampleWeek(false)}
-                  className={`px-2 py-0.5 font-pixel text-[0.45rem] transition-all cursor-pointer ${
-                    !showSampleWeek
-                      ? 'bg-soul-violet text-[#fff7e0]'
-                      : 'text-ink/60 hover:text-ink'
-                  }`}
-                >
-                  LIVE
-                </button>
-              </div>
-            )}
-            <span className="font-pixel text-[0.45rem] text-ink/50 uppercase">{range} trajectory</span>
-          </div>
+          <h2 className="text-sm font-semibold text-heal-green">Net Flow Trend</h2>
+          <span className="font-pixel text-[0.45rem] text-ink/50 uppercase">{range} trajectory</span>
         </div>
         <p className="font-pixel text-[0.45rem] text-ink/60 mb-3">
           Cumulative savings vs spends and net result
         </p>
 
-        {activeNetFlowData.length === 0 ? (
+        {netFlowTrendData.length === 0 ? (
           <div className="text-center py-8">
             <p className="font-pixel text-[0.55rem] text-coin-gold-deep mb-1">NO DATA RECORDED</p>
-            <p className="font-body text-sm text-ink/60 mb-3">Log transactions to trace your net flow curve</p>
-            {range === 'week' && (
-              <button
-                type="button"
-                onClick={() => setShowSampleWeek(true)}
-                className="font-pixel text-[0.5rem] px-3 py-1 bg-soul-violet text-[#fff7e0] shadow-[0_0_0_2px_#3a2410] hover:brightness-110 transition-all cursor-pointer"
-              >
-                SHOW SAMPLE WEEK
-              </button>
-            )}
+            <p className="font-body text-sm text-ink/60">Log transactions to trace your net flow curve</p>
           </div>
         ) : (
           <div>
             <ResponsiveContainer width="100%" height={210}>
-              <LineChart data={activeNetFlowData} margin={{ top: 12, right: 10, bottom: 5, left: -10 }}>
+              <LineChart data={netFlowTrendData} margin={{ top: 12, right: 10, bottom: 5, left: -10 }}>
                 <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
                 <YAxis
                   tick={AXIS_TICK_SOFT}
@@ -234,11 +185,7 @@ export function InsightsPage() {
                     <RetroTooltip
                       formatter={(val, name) => [
                         formatINR(Number(val)),
-                        name === 'savings' || name === 'Savings'
-                          ? 'Savings'
-                          : name === 'spends' || name === 'Spends'
-                            ? 'Spends'
-                            : 'Net Flow',
+                        name === 'savings' ? 'Savings' : name === 'spends' ? 'Spends' : 'Net Flow',
                       ]}
                     />
                   }
