@@ -1,0 +1,509 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Base */
+  --color-vault-black: #0a0a0f;
+  --color-vault-panel: #12121c;
+  --color-vault-indigo: #1a1a3e;
+  --color-vault-indigo-light: #252550;
+  /* Accents (Vault Aurora) */
+  --color-coin-gold: #f5c518;
+  --color-heal-green: #3ddc97;
+  --color-soul-violet: #9b5de5;
+  --color-danger-red: #ff6b6b;
+  /* Pixel fonts */
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-body: 'VT323', 'Courier New', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 18px;
+  background: #0a0a0f;
+  color: #ffffff;
+  /* Crisp pixel text — turn OFF smoothing */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  text-rendering: optimizeSpeed;
+}
+
+/* ══════════════════════════════════════════
+   PIXEL RENDERING — nothing is ever blurry
+   ══════════════════════════════════════════ */
+img,
+canvas,
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ══════════════════════════════════════════
+   SHARP CORNERS EVERYWHERE (kill web rounding)
+   Unlayered rules beat Tailwind's layered utils.
+   ══════════════════════════════════════════ */
+[class*='rounded'] {
+  border-radius: 0 !important;
+}
+button,
+input,
+select,
+textarea,
+a {
+  border-radius: 0;
+}
+
+/* ══════════════════════════════════════════
+   TYPOGRAPHY — Press Start 2P titles, VT323 body
+   ══════════════════════════════════════════ */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-pixel);
+  color: #ffffff;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+}
+h1 {
+  font-size: 1rem;
+  text-shadow: 3px 3px 0 #000;
+}
+h2 {
+  font-size: 0.72rem;
+  text-shadow: 2px 2px 0 #000;
+}
+h3 {
+  font-size: 0.62rem;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.font-pixel {
+  font-family: var(--font-pixel);
+}
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Hard, no-blur pixel drop shadow for titles */
+.pixel-shadow {
+  text-shadow: 3px 3px 0 #000;
+}
+.pixel-shadow-sm {
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* ══════════════════════════════════════════
+   RETRO DIALOG PANEL (layered box-shadow border)
+   ══════════════════════════════════════════ */
+.retro-panel {
+  --edge: #9b5de5;
+  position: relative;
+  background: #12121c;
+  padding: 1rem;
+  box-shadow:
+    0 0 0 3px #000,
+    0 0 0 6px var(--edge),
+    inset 0 3px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.55),
+    inset 3px 0 0 rgba(255, 255, 255, 0.05),
+    inset -3px 0 0 rgba(0, 0, 0, 0.35);
+}
+.retro-panel--gold {
+  --edge: #f5c518;
+}
+.retro-panel--green {
+  --edge: #3ddc97;
+}
+.retro-panel--violet {
+  --edge: #9b5de5;
+}
+.retro-panel--none {
+  --edge: #2a2a3e;
+}
+
+/* ══════════════════════════════════════════
+   RETRO BUTTON (chunky, pressable)
+   ══════════════════════════════════════════ */
+.retro-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  line-height: 1.6;
+  color: #ffffff;
+  background: #1b1b2e;
+  padding: 0.75rem 1rem;
+  border: 0;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow:
+    0 0 0 3px #000,
+    0 5px 0 0 #000,
+    inset 0 2px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.5);
+  transition: transform 0.04s linear;
+  user-select: none;
+}
+.retro-btn:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 0 0 3px #000,
+    0 1px 0 0 #000,
+    inset 0 2px 0 rgba(255, 255, 255, 0.12);
+}
+.retro-btn--gold {
+  background: #f5c518;
+  color: #0a0a0f;
+}
+.retro-btn--green {
+  background: #3ddc97;
+  color: #0a0a0f;
+}
+.retro-btn--violet {
+  background: #9b5de5;
+  color: #0a0a0f;
+}
+.retro-btn--danger {
+  background: #ff6b6b;
+  color: #0a0a0f;
+}
+
+/* Accent hard outlines (replace old soft glows, no blur) */
+.glow-gold {
+  box-shadow: 0 0 0 3px #000, 0 0 0 5px #f5c518;
+}
+.glow-violet {
+  box-shadow: 0 0 0 3px #000, 0 0 0 5px #9b5de5;
+}
+.glow-green {
+  box-shadow: 0 0 0 3px #000, 0 0 0 5px #3ddc97;
+}
+
+/* ══════════════════════════════════════════
+   RETRO FORM CONTROLS
+   ══════════════════════════════════════════ */
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  background: #0a0a0f;
+  color: #ffffff;
+  box-shadow: 0 0 0 2px #000, inset 0 0 0 2px #2a2a3e;
+  outline: none;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 2px #000, inset 0 0 0 2px #f5c518;
+}
+
+/* ══════════════════════════════════════════
+   SCROLLBAR — chunky, square
+   ══════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+::-webkit-scrollbar-thumb {
+  background: #9b5de5;
+  border: 2px solid #000;
+}
+
+/* ══════════════════════════════════════════
+   CRT SCANLINE + VIGNETTE OVERLAY
+   ══════════════════════════════════════════ */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+.crt-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.22) 3px,
+    rgba(0, 0, 0, 0) 4px
+  );
+}
+.crt-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+/* Starfield backdrop utility */
+.starfield {
+  background-color: #0a0a0f;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 70% 60%, #f5c51855, transparent),
+    radial-gradient(1px 1px at 40% 80%, #9b5de555, transparent),
+    radial-gradient(1px 1px at 85% 20%, #ffffff44, transparent),
+    radial-gradient(1px 1px at 55% 15%, #3ddc9744, transparent);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+@keyframes blink-selector {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.animate-blink {
+  animation: blink-selector 1s steps(1) infinite;
+}
+
+/* ══════════════════════════════════════════
+   SOUL SPRITE ANIMATIONS
+   ══════════════════════════════════════════ */
+/* Idle float/bob — steps() keeps it choppy/retro */
+@keyframes soul-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8%);
+  }
+}
+/* Breathing — subtle squash/stretch */
+@keyframes soul-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.03, 0.97);
+  }
+}
+/* Nervous shiver (worried) */
+@keyframes soul-shiver {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1.5%);
+  }
+  75% {
+    transform: translateX(1.5%);
+  }
+}
+/* Slow droop pulse (distressed) */
+@keyframes soul-droop {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(3%);
+    opacity: 0.7;
+  }
+}
+/* Blink layer flash */
+@keyframes soul-blink {
+  0%,
+  92%,
+  100% {
+    opacity: 0;
+  }
+  94%,
+  97% {
+    opacity: 1;
+  }
+}
+/* Reaction: jump on mood improve */
+@keyframes soul-jump {
+  0% {
+    transform: translateY(0) scale(1, 1);
+  }
+  30% {
+    transform: translateY(-40%) scale(0.9, 1.1);
+  }
+  60% {
+    transform: translateY(0) scale(1.1, 0.9);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+/* Reaction: shake + dim on mood worsen */
+@keyframes soul-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8%);
+  }
+  40% {
+    transform: translateX(8%);
+  }
+  60% {
+    transform: translateX(-5%);
+  }
+  80% {
+    transform: translateX(5%);
+  }
+}
+/* Sparkle twinkle */
+@keyframes soul-spark {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+/* Sparkle burst (on improve) */
+@keyframes spark-burst {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--bx), var(--by)) scale(1);
+    opacity: 0;
+  }
+}
+
+.soul-idle-thriving {
+  animation: soul-bob 0.9s steps(4) infinite;
+}
+.soul-idle-content {
+  animation: soul-bob 2.4s ease-in-out infinite;
+}
+.soul-idle-worried {
+  animation: soul-shiver 0.28s steps(2) infinite;
+}
+.soul-idle-distressed {
+  animation: soul-droop 3.4s ease-in-out infinite;
+}
+.soul-breathe {
+  animation: soul-breathe 3s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+.soul-blink-layer {
+  animation: soul-blink 4.5s steps(1) infinite;
+}
+.soul-react-up {
+  animation: soul-jump 0.6s ease-out;
+}
+.soul-react-down {
+  animation: soul-shake 0.5s steps(2);
+  filter: brightness(0.55) saturate(0.6);
+}
+.soul-spark {
+  animation: soul-spark 1.1s steps(2) infinite;
+}
+.spark-particle {
+  animation: spark-burst 0.7s ease-out forwards;
+}
+
+/* ══════════════════════════════════════════
+   ISOMETRIC WORLD MAP ANIMATIONS
+   ══════════════════════════════════════════ */
+@keyframes star-tw {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.iso-star {
+  animation: star-tw var(--tw, 2s) steps(2) infinite;
+}
+@keyframes iso-float {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-26px);
+    opacity: 0;
+  }
+}
+.iso-particle {
+  animation: iso-float var(--dur, 4s) linear infinite;
+}
+@keyframes iso-cloud {
+  0% {
+    transform: translateX(-60px);
+  }
+  100% {
+    transform: translateX(400px);
+  }
+}
+.iso-cloud {
+  animation: iso-cloud var(--dur, 26s) linear infinite;
+}
+@keyframes iso-danger {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.iso-danger-glow {
+  animation: iso-danger 1.1s steps(3) infinite;
+}
+@keyframes iso-lamp {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.iso-lamp {
+  animation: iso-lamp 2.4s ease-in-out infinite;
+}
+@keyframes iso-crystal {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.iso-crystal {
+  animation: iso-crystal 2s ease-in-out infinite;
+}

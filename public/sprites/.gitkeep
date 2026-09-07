@@ -1,0 +1,7 @@
+Drop real pixel-art PNGs here to override the generated SVG placeholders.
+
+Soul (Step 2):   soul-thriving.png  soul-content.png  soul-worried.png  soul-distressed.png
+Buildings (Step 4): building-tidy.png  building-moderate.png  building-ominous.png  monument.png
+
+Recommended: square, 16x16 or 32x32, transparent background, no anti-aliasing.
+Files load automatically if present; otherwise the built-in SVG pixel placeholder is used.
