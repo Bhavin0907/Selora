@@ -13,7 +13,7 @@ import { CreatePage } from './pages/CreatePage'
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-full starfield font-body">
+      <div className="min-h-full overworld-bg font-body">
         <TopStatusBar />
         <main className="max-w-lg mx-auto px-4 pt-4 pb-24">
           <Routes>

@@ -127,18 +127,18 @@ export function LogPage() {
   return (
     <div className="space-y-4 relative">
       <header>
-        <h1 className="text-2xl font-bold text-white">Log</h1>
-        <p className="text-sm text-white/50">Track spending & savings</p>
+        <h1 className="text-2xl font-bold text-ink">Log</h1>
+        <p className="text-sm text-ink/70">Track spending & savings</p>
       </header>
 
-      <div className="flex rounded-xl bg-vault-indigo-light p-1">
+      <div className="flex bg-vault-indigo-light p-1 shadow-[0_0_0_2px_#3a2410]">
         <button
           type="button"
           onClick={() => switchMode('spend')}
-          className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex-1 py-2.5 text-sm font-semibold transition-all ${
             mode === 'spend'
-              ? 'bg-danger-red/90 text-white shadow-lg'
-              : 'text-white/50 hover:text-white/80'
+              ? 'bg-danger-red text-[#fff7e0]'
+              : 'text-ink/60 hover:text-ink'
           }`}
         >
           Log Spend
@@ -146,10 +146,10 @@ export function LogPage() {
         <button
           type="button"
           onClick={() => switchMode('save')}
-          className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex-1 py-2.5 text-sm font-semibold transition-all ${
             mode === 'save'
-              ? 'bg-heal-green text-vault-indigo shadow-lg'
-              : 'text-white/50 hover:text-white/80'
+              ? 'bg-heal-green text-[#fff7e0]'
+              : 'text-ink/60 hover:text-ink'
           }`}
         >
           Log Savings
@@ -159,7 +159,7 @@ export function LogPage() {
       <Card glow={mode === 'save' ? 'green' : 'none'}>
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
-            <label htmlFor="log-amount" className="text-xs text-white/50 block mb-1">
+            <label htmlFor="log-amount" className="text-xs text-ink/60 block mb-1">
               Amount (₹)
             </label>
             <input
@@ -172,8 +172,8 @@ export function LogPage() {
                 setErrors((prev) => ({ ...prev, amount: undefined }))
               }}
               placeholder="0"
-              className={`w-full bg-vault-indigo border rounded-xl px-4 py-3 text-xl font-bold text-white focus:outline-none ${
-                errors.amount ? 'border-danger-red' : 'border-white/10 focus:border-coin-gold'
+              className={`w-full px-4 py-3 text-xl font-bold ${
+                errors.amount ? 'shadow-[0_0_0_2px_#3a2410,inset_0_0_0_2px_#d64545]' : ''
               }`}
               min="0.01"
               step="any"
@@ -186,7 +186,7 @@ export function LogPage() {
           {mode === 'spend' ? (
             <>
               <div>
-                <label htmlFor="log-location" className="text-xs text-white/50 block mb-1">
+                <label htmlFor="log-location" className="text-xs text-ink/60 block mb-1">
                   Location
                 </label>
                 <select
@@ -201,8 +201,8 @@ export function LogPage() {
                     setLocation(val)
                     setErrors((prev) => ({ ...prev, location: undefined }))
                   }}
-                  className={`w-full bg-vault-indigo border rounded-xl px-4 py-3 text-white focus:outline-none ${
-                    errors.location ? 'border-danger-red' : 'border-white/10 focus:border-coin-gold'
+                  className={`w-full px-4 py-3 ${
+                    errors.location ? 'shadow-[0_0_0_2px_#3a2410,inset_0_0_0_2px_#d64545]' : ''
                   }`}
                 >
                   <option value="">Select location</option>
@@ -219,7 +219,7 @@ export function LogPage() {
               </div>
 
               <div>
-                <label htmlFor="log-reason" className="text-xs text-white/50 block mb-1">
+                <label htmlFor="log-reason" className="text-xs text-ink/60 block mb-1">
                   Reason
                 </label>
                 <select
@@ -234,8 +234,8 @@ export function LogPage() {
                     setReason(val)
                     setErrors((prev) => ({ ...prev, reason: undefined }))
                   }}
-                  className={`w-full bg-vault-indigo border rounded-xl px-4 py-3 text-white focus:outline-none ${
-                    errors.reason ? 'border-danger-red' : 'border-white/10 focus:border-coin-gold'
+                  className={`w-full px-4 py-3 ${
+                    errors.reason ? 'shadow-[0_0_0_2px_#3a2410,inset_0_0_0_2px_#d64545]' : ''
                   }`}
                 >
                   <option value="">Select reason</option>
@@ -253,7 +253,7 @@ export function LogPage() {
             </>
           ) : (
             <div>
-              <label htmlFor="log-note" className="text-xs text-white/50 block mb-1">
+              <label htmlFor="log-note" className="text-xs text-ink/60 block mb-1">
                 Note (optional)
               </label>
               <input
@@ -262,14 +262,14 @@ export function LogPage() {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="e.g. Monthly SIP"
-                className="w-full bg-vault-indigo border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-heal-green"
+                className="w-full px-4 py-3"
               />
             </div>
           )}
 
           <button
             type="submit"
-            className={`w-full py-3 rounded-xl font-semibold text-vault-indigo transition-transform active:scale-[0.98] ${
+            className={`w-full py-3 font-semibold text-vault-indigo transition-transform active:scale-[0.98] ${
               mode === 'save' ? 'bg-heal-green glow-green' : 'bg-coin-gold glow-gold'
             }`}
           >
@@ -287,21 +287,21 @@ export function LogPage() {
               onChange={(e) => setNewLocation(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddLocation()}
               placeholder="e.g. Gym"
-              className="w-full bg-vault-indigo border border-white/10 rounded-xl px-4 py-2 text-white mb-3"
+              className="w-full px-4 py-2 mb-3"
               autoFocus
             />
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setShowAddLocation(false)}
-                className="flex-1 py-2 rounded-xl bg-white/10 text-white"
+                className="flex-1 py-2 bg-[#8a5a2b] text-[#fff7e0] shadow-[0_0_0_2px_#3a2410]"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleAddLocation}
-                className="flex-1 py-2 rounded-xl bg-coin-gold text-vault-indigo font-semibold"
+                className="flex-1 py-2 bg-coin-gold text-vault-indigo font-semibold shadow-[0_0_0_2px_#3a2410]"
               >
                 Add
               </button>
@@ -319,21 +319,21 @@ export function LogPage() {
               onChange={(e) => setNewReason(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddReason()}
               placeholder="e.g. Entertainment"
-              className="w-full bg-vault-indigo border border-white/10 rounded-xl px-4 py-2 text-white mb-3"
+              className="w-full px-4 py-2 mb-3"
               autoFocus
             />
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setShowAddReason(false)}
-                className="flex-1 py-2 rounded-xl bg-white/10 text-white"
+                className="flex-1 py-2 bg-[#8a5a2b] text-[#fff7e0] shadow-[0_0_0_2px_#3a2410]"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleAddReason}
-                className="flex-1 py-2 rounded-xl bg-coin-gold text-vault-indigo font-semibold"
+                className="flex-1 py-2 bg-coin-gold text-vault-indigo font-semibold shadow-[0_0_0_2px_#3a2410]"
               >
                 Add
               </button>

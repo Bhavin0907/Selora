@@ -15,15 +15,15 @@ export function HomePage() {
   return (
     <div className="space-y-4">
       <header>
-        <h1 className="text-2xl font-bold text-white">Selora</h1>
-        <p className="text-sm text-white/50">Your savings Soul</p>
+        <h1 className="text-2xl font-bold text-ink">Selora</h1>
+        <p className="text-sm text-ink/70">Your savings soul</p>
       </header>
 
-      <Card glow="violet" className="flex flex-col items-center py-6">
+      <Card glow="green" className="flex flex-col items-center py-6">
         <SoulAvatar mood={soul.mood} health={soul.health} auraColor={soul.auraColor} />
       </Card>
 
-      <Card>
+      <Card glow="violet">
         <h2 className="text-sm font-semibold text-soul-violet mb-3">Why your Soul feels this way</h2>
         <ul className="space-y-2">
           {soul.factors.map((factor, i) => (
@@ -32,9 +32,9 @@ export function HomePage() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="text-sm text-white/80 flex items-start gap-2"
+              className="text-sm text-ink/85 flex items-start gap-2"
             >
-              <span className="text-coin-gold mt-0.5">•</span>
+              <span className="text-coin-gold-deep mt-0.5">•</span>
               {factor}
             </motion.li>
           ))}
@@ -42,23 +42,23 @@ export function HomePage() {
       </Card>
 
       <div className="grid grid-cols-2 gap-3">
-        <Card className="text-center">
-          <p className="text-xs text-white/50">Streak</p>
+        <Card glow="green" className="text-center">
+          <p className="text-xs text-ink/60">Streak</p>
           <p className="text-xl font-bold text-heal-green">{soul.savingsStreak} days</p>
         </Card>
-        <Card className="text-center">
-          <p className="text-xs text-white/50">Net Flow (week)</p>
+        <Card glow="green" className="text-center">
+          <p className="text-xs text-ink/60">Net Flow (week)</p>
           <p className={`text-xl font-bold ${soul.netFlow >= 0 ? 'text-heal-green' : 'text-danger-red'}`}>
             {formatINR(soul.netFlow)}
           </p>
         </Card>
-        <Card className="text-center">
-          <p className="text-xs text-white/50">Consistency</p>
+        <Card glow="violet" className="text-center">
+          <p className="text-xs text-ink/60">Consistency</p>
           <p className="text-xl font-bold text-soul-violet">{soul.consistency}%</p>
         </Card>
-        <Card className="text-center">
-          <p className="text-xs text-white/50">Impulse Ratio</p>
-          <p className="text-xl font-bold text-coin-gold">{Math.round(soul.impulseRatio * 100)}%</p>
+        <Card glow="gold" className="text-center">
+          <p className="text-xs text-ink/60">Impulse Ratio</p>
+          <p className="text-xl font-bold text-coin-gold-deep">{Math.round(soul.impulseRatio * 100)}%</p>
         </Card>
       </div>
     </div>

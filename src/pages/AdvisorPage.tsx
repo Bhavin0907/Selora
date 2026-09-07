@@ -19,16 +19,16 @@ export function AdvisorPage() {
     <div className="space-y-4">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Advisor</h1>
-          <p className="text-sm text-white/50">Personalised tips from your data</p>
+          <h1 className="text-2xl font-bold text-ink">Advisor</h1>
+          <p className="text-sm text-ink/70">Personalised tips from your data</p>
         </div>
-        <div className="flex rounded-lg bg-vault-indigo-light p-0.5">
+        <div className="flex bg-vault-indigo-light p-0.5 shadow-[0_0_0_2px_#3a2410]">
           {(['week', 'month'] as TimeRange[]).map((r) => (
             <button
               key={r}
               onClick={() => setRange(r)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-all ${
-                range === r ? 'bg-coin-gold text-vault-indigo' : 'text-white/50'
+              className={`px-3 py-1.5 text-xs font-medium capitalize transition-all ${
+                range === r ? 'bg-coin-gold text-vault-indigo' : 'text-ink/60'
               }`}
             >
               {r}
@@ -52,9 +52,9 @@ export function AdvisorPage() {
                 </span>
                 <div>
                   {i === 0 && (
-                    <p className="text-xs text-coin-gold font-semibold mb-1">Highest Impact</p>
+                    <p className="text-xs text-coin-gold-deep font-semibold mb-1">Highest Impact</p>
                   )}
-                  <p className="text-sm text-white/85 leading-relaxed">{tip.text}</p>
+                  <p className="text-sm text-ink/85 leading-relaxed">{tip.text}</p>
                 </div>
               </div>
             </Card>

@@ -39,14 +39,14 @@ function OptionThumb({
       type="button"
       onClick={onSelect}
       title={optionLabel(optionId)}
-      className={`relative shrink-0 bg-[#0a0a0f] p-1 ${
-        selected ? 'avatar-opt-selected' : 'shadow-[0_0_0_2px_#000,0_0_0_3px_#2a2a3e]'
+      className={`relative shrink-0 bg-[#d8f0ff] p-1 ${
+        selected ? 'avatar-opt-selected' : 'shadow-[0_0_0_2px_#3a2410,0_0_0_3px_#8a5a2b]'
       }`}
     >
       <Avatar config={preview} size={40} />
       {category.kind === 'color' && (
         <span
-          className="absolute bottom-1 right-1 block w-2 h-2 shadow-[0_0_0_1px_#000]"
+          className="absolute bottom-1 right-1 block w-2 h-2 shadow-[0_0_0_1px_#3a2410]"
           style={{ background: swatchColor(category.id, optionId) }}
         />
       )}
@@ -100,13 +100,13 @@ export function CreatePage() {
     <div className="space-y-4">
       <header className="flex items-center justify-between gap-2">
         <div>
-          <h1 className="text-2xl font-bold text-white">Create Your Soul</h1>
-          <p className="text-sm text-white/50">Build your pixel avatar</p>
+          <h1 className="text-2xl font-bold text-ink">Create Your Soul</h1>
+          <p className="text-sm text-ink/70">Build your pixel avatar</p>
         </div>
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="font-pixel text-[0.5rem] px-2 py-1.5 bg-[#1b1b2e] text-white/70 shadow-[0_0_0_2px_#000] active:translate-y-[1px]"
+          className="font-pixel text-[0.5rem] px-2 py-1.5 bg-[#8a5a2b] text-[#fff7e0] shadow-[0_0_0_2px_#3a2410] active:translate-y-[1px]"
           title="Cancel"
         >
           ✕
@@ -115,7 +115,7 @@ export function CreatePage() {
 
       {/* Live preview */}
       <Card glow="violet" className="flex flex-col items-center py-6">
-        <div className="p-2 bg-[#0a0a0f] shadow-[0_0_0_3px_#000,0_0_0_5px_#9b5de5]">
+        <div className="p-2 bg-[#d8f0ff] shadow-[0_0_0_3px_#3a2410,0_0_0_5px_#7a5bd0]">
           <Avatar config={draft} size={176} auraColor={soul.auraColor} bob />
         </div>
         <p
@@ -152,8 +152,8 @@ export function CreatePage() {
               key={cat.id}
               type="button"
               onClick={() => handleTab(cat)}
-              className={`font-pixel text-[0.4rem] leading-tight px-1 py-2 shadow-[0_0_0_2px_#000] active:translate-y-[1px] ${
-                isActive ? 'bg-soul-violet text-black' : 'bg-[#1b1b2e] text-white/60'
+              className={`font-pixel text-[0.4rem] leading-tight px-1 py-2 shadow-[0_0_0_2px_#3a2410] active:translate-y-[1px] ${
+                isActive ? 'bg-soul-violet text-[#fff7e0]' : 'bg-[#8a5a2b] text-[#fff7e0]/70'
               }`}
             >
               {cat.label}
@@ -165,8 +165,8 @@ export function CreatePage() {
       {/* Active category selector */}
       <Card>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-coin-gold">{activeCat.label}</h2>
-          <span className="font-body text-white/50 text-lg">
+          <h2 className="text-sm font-semibold text-coin-gold-deep">{activeCat.label}</h2>
+          <span className="font-body text-ink/60 text-lg">
             {optionLabel(currentId)} ({currentIndex + 1}/{options.length})
           </span>
         </div>
@@ -175,7 +175,7 @@ export function CreatePage() {
           <button
             type="button"
             onClick={() => cycle(-1)}
-            className="font-pixel text-sm text-coin-gold px-2 py-3 bg-[#0a0a0f] shadow-[0_0_0_2px_#000,inset_0_0_0_2px_#2a2a3e] active:translate-y-[1px]"
+            className="font-pixel text-sm text-wood-dark px-2 py-3 bg-[#fffaf0] shadow-[0_0_0_2px_#3a2410,inset_0_0_0_2px_#d8b56a] active:translate-y-[1px]"
             aria-label={`Previous ${activeCat.label}`}
           >
             ◀
@@ -199,7 +199,7 @@ export function CreatePage() {
           <button
             type="button"
             onClick={() => cycle(1)}
-            className="font-pixel text-sm text-coin-gold px-2 py-3 bg-[#0a0a0f] shadow-[0_0_0_2px_#000,inset_0_0_0_2px_#2a2a3e] active:translate-y-[1px]"
+            className="font-pixel text-sm text-wood-dark px-2 py-3 bg-[#fffaf0] shadow-[0_0_0_2px_#3a2410,inset_0_0_0_2px_#d8b56a] active:translate-y-[1px]"
             aria-label={`Next ${activeCat.label}`}
           >
             ▶
@@ -210,7 +210,7 @@ export function CreatePage() {
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="text-center text-white/40 font-body text-base"
+        className="text-center text-ink/50 font-body text-base"
       >
         Mood only tints the aura — your look is yours.
       </motion.p>

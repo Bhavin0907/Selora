@@ -1,16 +1,34 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Base */
-  --color-vault-black: #0a0a0f;
-  --color-vault-panel: #12121c;
-  --color-vault-indigo: #1a1a3e;
-  --color-vault-indigo-light: #252550;
-  /* Accents (Vault Aurora) */
+  /* ── Overworld base surfaces ── */
+  --color-vault-black: #43301a; /* ink (kept name for compat) */
+  --color-vault-panel: #f7e6bd; /* parchment */
+  --color-vault-indigo: #2e4a2e; /* dark green ink (button text) */
+  --color-vault-indigo-light: #cfe9ff; /* light sky (toggle tracks) */
+
+  /* ── Overworld palette ── */
+  --color-ink: #43301a;
+  --color-parchment: #f7e6bd;
+  --color-parchment-dark: #ecd39b;
+  --color-wood: #8a5a2b;
+  --color-wood-dark: #5e3c1a;
+  --color-ocean: #3a7bd5;
+  --color-ocean-deep: #23538f;
+  --color-grass: #5fbf3f;
+  --color-grass-dark: #2e7d32;
+  --color-sand: #f2e2b8;
+  --color-cliff: #8a5a2b;
+  --color-sky: #bfeaff;
+  --color-sky-deep: #7ec8f0;
+
+  /* ── Accents (kept names, retuned for bright bg) ── */
   --color-coin-gold: #f5c518;
-  --color-heal-green: #3ddc97;
-  --color-soul-violet: #9b5de5;
-  --color-danger-red: #ff6b6b;
+  --color-coin-gold-deep: #b5860b;
+  --color-heal-green: #2e9e4f;
+  --color-soul-violet: #7a5bd0;
+  --color-danger-red: #d64545;
+
   /* Pixel fonts */
   --font-pixel: 'Press Start 2P', monospace;
   --font-body: 'VT323', 'Courier New', monospace;
@@ -30,8 +48,8 @@ body,
 body {
   font-family: var(--font-body);
   font-size: 18px;
-  background: #0a0a0f;
-  color: #ffffff;
+  background: #7ec8f0;
+  color: var(--color-ink);
   /* Crisp pixel text — turn OFF smoothing */
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: unset;
@@ -50,7 +68,6 @@ canvas,
 
 /* ══════════════════════════════════════════
    SHARP CORNERS EVERYWHERE (kill web rounding)
-   Unlayered rules beat Tailwind's layered utils.
    ══════════════════════════════════════════ */
 [class*='rounded'] {
   border-radius: 0 !important;
@@ -65,27 +82,28 @@ a {
 
 /* ══════════════════════════════════════════
    TYPOGRAPHY — Press Start 2P titles, VT323 body
+   On bright backdrops: dark ink with a light hard shadow.
    ══════════════════════════════════════════ */
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--font-pixel);
-  color: #ffffff;
+  color: var(--color-ink);
   line-height: 1.5;
   letter-spacing: 0.5px;
 }
 h1 {
   font-size: 1rem;
-  text-shadow: 3px 3px 0 #000;
+  text-shadow: 2px 2px 0 #fff7e0, 4px 4px 0 rgba(94, 60, 26, 0.35);
 }
 h2 {
   font-size: 0.72rem;
-  text-shadow: 2px 2px 0 #000;
+  text-shadow: 2px 2px 0 #fff7e0;
 }
 h3 {
   font-size: 0.62rem;
-  text-shadow: 2px 2px 0 #000;
+  text-shadow: 2px 2px 0 #fff7e0;
 }
 
 .font-pixel {
@@ -95,134 +113,153 @@ h3 {
   font-family: var(--font-body);
 }
 
-/* Hard, no-blur pixel drop shadow for titles */
+/* Hard, no-blur pixel drop shadow for titles (light, for bright bg) */
 .pixel-shadow {
-  text-shadow: 3px 3px 0 #000;
+  text-shadow: 2px 2px 0 #fff7e0;
 }
 .pixel-shadow-sm {
-  text-shadow: 2px 2px 0 #000;
+  text-shadow: 1px 1px 0 #fff7e0;
+}
+/* Dark variant for text sitting on dark/wood bars */
+.pixel-shadow-dark {
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* ══════════════════════════════════════════
-   RETRO DIALOG PANEL (layered box-shadow border)
+   SNES-STYLE MESSAGE BOX (parchment dialog)
+   Thick pixel border + inset highlight.
    ══════════════════════════════════════════ */
 .retro-panel {
-  --edge: #9b5de5;
+  --edge: #8a5a2b;
   position: relative;
-  background: #12121c;
+  background: #f7e6bd;
+  color: var(--color-ink);
   padding: 1rem;
   box-shadow:
-    0 0 0 3px #000,
+    0 0 0 3px #3a2410,
     0 0 0 6px var(--edge),
-    inset 0 3px 0 rgba(255, 255, 255, 0.14),
-    inset 0 -4px 0 rgba(0, 0, 0, 0.55),
-    inset 3px 0 0 rgba(255, 255, 255, 0.05),
-    inset -3px 0 0 rgba(0, 0, 0, 0.35);
+    0 0 0 8px #3a2410,
+    inset 0 3px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -4px 0 rgba(138, 90, 43, 0.35),
+    inset 3px 0 0 rgba(255, 255, 255, 0.35),
+    inset -3px 0 0 rgba(138, 90, 43, 0.25);
 }
 .retro-panel--gold {
-  --edge: #f5c518;
+  --edge: #e0a11a;
 }
 .retro-panel--green {
-  --edge: #3ddc97;
+  --edge: #2e9e4f;
 }
 .retro-panel--violet {
-  --edge: #9b5de5;
+  --edge: #7a5bd0;
+}
+.retro-panel--blue {
+  --edge: #3a7bd5;
+  background: #d8f0ff;
 }
 .retro-panel--none {
-  --edge: #2a2a3e;
+  --edge: #8a5a2b;
 }
 
 /* ══════════════════════════════════════════
-   RETRO BUTTON (chunky, pressable)
+   RETRO BUTTON (chunky, pressable, wooden)
    ══════════════════════════════════════════ */
 .retro-btn {
   font-family: var(--font-pixel);
   font-size: 0.6rem;
   line-height: 1.6;
-  color: #ffffff;
-  background: #1b1b2e;
+  color: #fff7e0;
+  background: #8a5a2b;
   padding: 0.75rem 1rem;
   border: 0;
   cursor: pointer;
   text-transform: uppercase;
   box-shadow:
-    0 0 0 3px #000,
-    0 5px 0 0 #000,
-    inset 0 2px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.5);
+    0 0 0 3px #3a2410,
+    0 5px 0 0 #3a2410,
+    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -3px 0 rgba(58, 36, 16, 0.5);
   transition: transform 0.04s linear;
   user-select: none;
 }
 .retro-btn:active {
   transform: translateY(4px);
   box-shadow:
-    0 0 0 3px #000,
-    0 1px 0 0 #000,
-    inset 0 2px 0 rgba(255, 255, 255, 0.12);
+    0 0 0 3px #3a2410,
+    0 1px 0 0 #3a2410,
+    inset 0 2px 0 rgba(255, 255, 255, 0.2);
 }
 .retro-btn--gold {
   background: #f5c518;
-  color: #0a0a0f;
+  color: #4a3319;
 }
 .retro-btn--green {
-  background: #3ddc97;
-  color: #0a0a0f;
+  background: #46c46a;
+  color: #143a1f;
 }
 .retro-btn--violet {
-  background: #9b5de5;
-  color: #0a0a0f;
+  background: #7a5bd0;
+  color: #fff7e0;
+}
+.retro-btn--blue {
+  background: #3a7bd5;
+  color: #fff7e0;
 }
 .retro-btn--danger {
-  background: #ff6b6b;
-  color: #0a0a0f;
+  background: #d64545;
+  color: #fff7e0;
 }
 
-/* Accent hard outlines (replace old soft glows, no blur) */
+/* Accent hard outlines (bright, no blur) */
 .glow-gold {
-  box-shadow: 0 0 0 3px #000, 0 0 0 5px #f5c518;
+  box-shadow: 0 0 0 3px #3a2410, 0 0 0 5px #f5c518;
 }
 .glow-violet {
-  box-shadow: 0 0 0 3px #000, 0 0 0 5px #9b5de5;
+  box-shadow: 0 0 0 3px #3a2410, 0 0 0 5px #7a5bd0;
 }
 .glow-green {
-  box-shadow: 0 0 0 3px #000, 0 0 0 5px #3ddc97;
+  box-shadow: 0 0 0 3px #3a2410, 0 0 0 5px #46c46a;
 }
 
 /* ══════════════════════════════════════════
-   RETRO FORM CONTROLS
+   RETRO FORM CONTROLS (parchment fields)
    ══════════════════════════════════════════ */
 input,
 select,
 textarea {
   font-family: var(--font-body);
   font-size: 1.1rem;
-  background: #0a0a0f;
-  color: #ffffff;
-  box-shadow: 0 0 0 2px #000, inset 0 0 0 2px #2a2a3e;
+  background: #fffaf0;
+  color: var(--color-ink);
+  box-shadow: 0 0 0 2px #3a2410, inset 0 0 0 2px #d8b56a;
   outline: none;
+}
+input::placeholder,
+textarea::placeholder {
+  color: rgba(67, 48, 26, 0.45);
 }
 input:focus,
 select:focus,
 textarea:focus {
-  box-shadow: 0 0 0 2px #000, inset 0 0 0 2px #f5c518;
+  box-shadow: 0 0 0 2px #3a2410, inset 0 0 0 2px #f5c518;
 }
 
 /* ══════════════════════════════════════════
-   SCROLLBAR — chunky, square
+   SCROLLBAR — chunky, square, wooden
    ══════════════════════════════════════════ */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0f;
+  background: #ecd39b;
 }
 ::-webkit-scrollbar-thumb {
-  background: #9b5de5;
-  border: 2px solid #000;
+  background: #8a5a2b;
+  border: 2px solid #3a2410;
 }
 
 /* ══════════════════════════════════════════
-   CRT SCANLINE + VIGNETTE OVERLAY
+   CRT SCANLINE + VIGNETTE OVERLAY (soft, daytime)
    ══════════════════════════════════════════ */
 .crt-overlay {
   position: fixed;
@@ -238,7 +275,7 @@ textarea:focus {
     to bottom,
     rgba(0, 0, 0, 0) 0,
     rgba(0, 0, 0, 0) 2px,
-    rgba(0, 0, 0, 0.22) 3px,
+    rgba(0, 0, 0, 0.1) 3px,
     rgba(0, 0, 0, 0) 4px
   );
 }
@@ -248,22 +285,29 @@ textarea:focus {
   inset: 0;
   background: radial-gradient(
     ellipse at center,
-    rgba(0, 0, 0, 0) 55%,
-    rgba(0, 0, 0, 0.55) 100%
+    rgba(0, 0, 0, 0) 60%,
+    rgba(35, 83, 143, 0.28) 100%
   );
 }
 
-/* Starfield backdrop utility */
-.starfield {
-  background-color: #0a0a0f;
+/* ══════════════════════════════════════════
+   OVERWORLD BACKDROP — sky → ocean with clouds
+   (subtle, so text stays readable)
+   ══════════════════════════════════════════ */
+.overworld-bg {
+  background-color: #7ec8f0;
   background-image:
-    radial-gradient(1px 1px at 20% 30%, #ffffff55, transparent),
-    radial-gradient(1px 1px at 70% 60%, #f5c51855, transparent),
-    radial-gradient(1px 1px at 40% 80%, #9b5de555, transparent),
-    radial-gradient(1px 1px at 85% 20%, #ffffff44, transparent),
-    radial-gradient(1px 1px at 55% 15%, #3ddc9744, transparent);
-  background-repeat: repeat;
-  background-size: 200px 200px;
+    /* soft clouds */
+    radial-gradient(60px 26px at 12% 8%, rgba(255, 255, 255, 0.85), transparent 70%),
+    radial-gradient(80px 30px at 78% 5%, rgba(255, 255, 255, 0.7), transparent 70%),
+    radial-gradient(50px 22px at 45% 14%, rgba(255, 255, 255, 0.6), transparent 70%),
+    /* sun glow */
+    radial-gradient(120px 120px at 88% 2%, rgba(255, 236, 150, 0.55), transparent 70%),
+    /* sky → ocean vertical wash */
+    linear-gradient(to bottom, #bfeaff 0%, #8fd0f2 30%, #5fa9e6 62%, #3a7bd5 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 @keyframes blink-selector {
@@ -281,9 +325,8 @@ textarea:focus {
 }
 
 /* ══════════════════════════════════════════
-   SOUL SPRITE ANIMATIONS
+   SOUL SPRITE ANIMATIONS (unchanged)
    ══════════════════════════════════════════ */
-/* Idle float/bob — steps() keeps it choppy/retro */
 @keyframes soul-bob {
   0%,
   100% {
@@ -293,7 +336,6 @@ textarea:focus {
     transform: translateY(-8%);
   }
 }
-/* Breathing — subtle squash/stretch */
 @keyframes soul-breathe {
   0%,
   100% {
@@ -303,7 +345,6 @@ textarea:focus {
     transform: scale(1.03, 0.97);
   }
 }
-/* Nervous shiver (worried) */
 @keyframes soul-shiver {
   0%,
   100% {
@@ -316,7 +357,6 @@ textarea:focus {
     transform: translateX(1.5%);
   }
 }
-/* Slow droop pulse (distressed) */
 @keyframes soul-droop {
   0%,
   100% {
@@ -328,7 +368,6 @@ textarea:focus {
     opacity: 0.7;
   }
 }
-/* Blink layer flash */
 @keyframes soul-blink {
   0%,
   92%,
@@ -340,7 +379,6 @@ textarea:focus {
     opacity: 1;
   }
 }
-/* Reaction: jump on mood improve */
 @keyframes soul-jump {
   0% {
     transform: translateY(0) scale(1, 1);
@@ -355,7 +393,6 @@ textarea:focus {
     transform: translateY(0) scale(1, 1);
   }
 }
-/* Reaction: shake + dim on mood worsen */
 @keyframes soul-shake {
   0%,
   100% {
@@ -374,7 +411,6 @@ textarea:focus {
     transform: translateX(5%);
   }
 }
-/* Sparkle twinkle */
 @keyframes soul-spark {
   0%,
   100% {
@@ -384,7 +420,6 @@ textarea:focus {
     opacity: 1;
   }
 }
-/* Sparkle burst (on improve) */
 @keyframes spark-burst {
   0% {
     transform: translate(0, 0) scale(0);
@@ -395,7 +430,6 @@ textarea:focus {
     opacity: 0;
   }
 }
-
 .soul-idle-thriving {
   animation: soul-bob 0.9s steps(4) infinite;
 }
@@ -432,7 +466,6 @@ textarea:focus {
 /* ══════════════════════════════════════════
    AVATAR (custom pixel character)
    ══════════════════════════════════════════ */
-/* Idle bob — steps() keeps it choppy/retro */
 @keyframes avatar-bob {
   0%,
   100% {
@@ -445,15 +478,13 @@ textarea:focus {
 .avatar-bob {
   animation: avatar-bob 2s steps(6) infinite;
 }
-
-/* Pulsing frame for the currently-selected creator option */
 @keyframes avatar-sel-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 2px #000, 0 0 0 4px #f5c518;
+    box-shadow: 0 0 0 2px #3a2410, 0 0 0 4px #f5c518;
   }
   50% {
-    box-shadow: 0 0 0 2px #000, 0 0 0 4px #fff2ab;
+    box-shadow: 0 0 0 2px #3a2410, 0 0 0 4px #fff2ab;
   }
 }
 .avatar-opt-selected {
@@ -461,59 +492,131 @@ textarea:focus {
 }
 
 /* ══════════════════════════════════════════
-   ISOMETRIC WORLD MAP ANIMATIONS
+   OVERWORLD MAP ANIMATIONS
    ══════════════════════════════════════════ */
-@keyframes star-tw {
-  0%,
-  100% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-.iso-star {
-  animation: star-tw var(--tw, 2s) steps(2) infinite;
-}
-@keyframes iso-float {
+/* Drifting clouds across the map */
+@keyframes ow-cloud {
   0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-26px);
-    opacity: 0;
-  }
-}
-.iso-particle {
-  animation: iso-float var(--dur, 4s) linear infinite;
-}
-@keyframes iso-cloud {
-  0% {
-    transform: translateX(-60px);
+    transform: translateX(-40px);
   }
   100% {
     transform: translateX(400px);
   }
 }
-.iso-cloud {
-  animation: iso-cloud var(--dur, 26s) linear infinite;
+.ow-cloud {
+  animation: ow-cloud var(--dur, 30s) linear infinite;
 }
-@keyframes iso-danger {
+/* Node / avatar idle bob (choppy, retro) */
+@keyframes ow-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.ow-bob {
+  animation: ow-bob 1.6s steps(2) infinite;
+}
+/* Water shimmer twinkle */
+@keyframes ow-shimmer {
   0%,
   100% {
     opacity: 0.15;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.7;
   }
 }
-.iso-danger-glow {
-  animation: iso-danger 1.1s steps(3) infinite;
+.ow-shimmer {
+  animation: ow-shimmer var(--dur, 2.4s) steps(2) infinite;
 }
+/* Sparkle twinkle for gold monument */
+@keyframes ow-sparkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.ow-sparkle {
+  animation: ow-sparkle var(--dur, 1.4s) steps(2) infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+/* Swaying trees/bushes */
+@keyframes ow-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+.ow-sway {
+  animation: ow-sway var(--dur, 3s) ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+/* Flowing dotted path */
+@keyframes ow-path-flow {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+.ow-path {
+  animation: ow-path-flow 1.2s linear infinite;
+}
+/* Storm cloud pulse over ominous nodes */
+@keyframes ow-storm {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+.ow-storm {
+  animation: ow-storm 1.2s steps(2) infinite;
+}
+/* Lightning flash */
+@keyframes ow-flash {
+  0%,
+  88%,
+  100% {
+    opacity: 0;
+  }
+  90%,
+  94% {
+    opacity: 1;
+  }
+}
+.ow-flash {
+  animation: ow-flash 2.4s steps(1) infinite;
+}
+/* Bird flap drifting across sky */
+@keyframes ow-bird {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(380px, -18px);
+  }
+}
+.ow-bird {
+  animation: ow-bird var(--dur, 18s) linear infinite;
+}
+
+/* ══════════════════════════════════════════
+   LEGACY ISOMETRIC ANIMATIONS (kept for unused fallbacks)
+   ══════════════════════════════════════════ */
 @keyframes iso-lamp {
   0%,
   100% {
@@ -525,16 +628,4 @@ textarea:focus {
 }
 .iso-lamp {
   animation: iso-lamp 2.4s ease-in-out infinite;
-}
-@keyframes iso-crystal {
-  0%,
-  100% {
-    opacity: 0.85;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-.iso-crystal {
-  animation: iso-crystal 2s ease-in-out infinite;
 }

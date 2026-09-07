@@ -3,7 +3,7 @@ import { Card } from '../components/Card'
 import { computeBuildings } from '../lib/map'
 import { getAllLocations, useStore } from '../store/useStore'
 import { MapErrorBoundary } from '../components/Map3D/MapErrorBoundary'
-import { IsoWorld } from '../components/IsoWorld/IsoWorld'
+import { OverworldMap } from '../components/IsoWorld/OverworldMap'
 
 export function MapPage() {
   const spends = useStore((s) => s.spends)
@@ -24,15 +24,16 @@ export function MapPage() {
   const totalSpend = spends.reduce((s, sp) => s + sp.amount, 0)
   const totalSavings = savings.reduce((s, sv) => s + sv.amount, 0)
   const isEmpty = totalSpend === 0
+  const currentLocation = spends[0]?.location
 
   return (
     <div className="space-y-4">
       <header>
-        <h1>Spending Map</h1>
-        <p className="font-body text-base text-white/50">Your city grows with every spend</p>
+        <h1>World Map</h1>
+        <p className="font-body text-base text-ink/70">Your islands grow with every spend</p>
       </header>
 
-      <Card glow="violet" className="!p-1 overflow-hidden">
+      <Card glow="green" className="!p-1 overflow-hidden">
         <MapErrorBoundary
           fallback={
             <div className="h-[300px] flex items-center justify-center">
@@ -40,11 +41,12 @@ export function MapPage() {
             </div>
           }
         >
-          <IsoWorld
+          <OverworldMap
             buildings={activeBuildings}
             totalSpend={totalSpend}
             totalSavings={totalSavings}
             isEmpty={isEmpty}
+            currentLocation={currentLocation}
           />
         </MapErrorBoundary>
       </Card>
@@ -52,21 +54,21 @@ export function MapPage() {
       <Card>
         <h2 className="mb-3">Legend</h2>
         <div className="grid grid-cols-3 gap-2">
-          <div className="flex flex-col items-center gap-1.5 p-2 bg-heal-green/10 shadow-[inset_0_0_0_2px_#3ddc9740]">
-            <div className="w-4 h-3 bg-heal-green" />
-            <span className="font-body text-sm text-heal-green/80 text-center">Tidy cottage</span>
+          <div className="flex flex-col items-center gap-1.5 p-2 bg-grass/15 shadow-[inset_0_0_0_2px_#2e7d3266]">
+            <span className="text-xl">🏡</span>
+            <span className="font-body text-sm text-grass-dark text-center">Cozy cottage</span>
           </div>
-          <div className="flex flex-col items-center gap-1.5 p-2 bg-coin-gold/10 shadow-[inset_0_0_0_2px_#f5c51840]">
-            <div className="w-3 h-5 bg-coin-gold" />
-            <span className="font-body text-sm text-coin-gold/80 text-center">Moderate</span>
+          <div className="flex flex-col items-center gap-1.5 p-2 bg-coin-gold/15 shadow-[inset_0_0_0_2px_#b5860b66]">
+            <span className="text-xl">🏠</span>
+            <span className="font-body text-sm text-coin-gold-deep text-center">Busy house</span>
           </div>
-          <div className="flex flex-col items-center gap-1.5 p-2 bg-danger-red/10 shadow-[inset_0_0_0_2px_#ff6b6b40]">
-            <div className="w-2.5 h-7 bg-danger-red iso-lamp" />
-            <span className="font-body text-sm text-danger-red/80 text-center">Ominous tower</span>
+          <div className="flex flex-col items-center gap-1.5 p-2 bg-danger-red/15 shadow-[inset_0_0_0_2px_#d6454566]">
+            <span className="text-xl">🏰</span>
+            <span className="font-body text-sm text-danger-red text-center">Storm fortress</span>
           </div>
         </div>
-        <p className="font-body text-sm text-white/40 mt-3">
-          Tap a building for its spend, share & a tip. Savings grow the central crystal.
+        <p className="font-body text-sm text-ink/60 mt-3">
+          Tap a node for its spend, share & a tip. Savings grow the golden tree; your hero stands on the latest node.
         </p>
       </Card>
     </div>

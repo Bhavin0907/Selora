@@ -16,7 +16,7 @@ export function BottomNav() {
   const location = useLocation()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0f] safe-area-bottom shadow-[inset_0_3px_0_#9b5de5,inset_0_5px_0_#000]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#e8cf8f] safe-area-bottom shadow-[inset_0_3px_0_#8a5a2b,inset_0_6px_0_#3a2410]">
       <div className="max-w-lg mx-auto flex justify-around items-stretch px-1 py-1.5">
         {tabs.map((tab) => {
           const isActive =
@@ -30,7 +30,7 @@ export function BottomNav() {
                 if (!isActive) sfx.blip()
               }}
               className={`relative flex flex-col items-center gap-1 px-1.5 py-1.5 min-w-0 transition-colors ${
-                isActive ? 'text-coin-gold' : 'text-white/45 hover:text-white/80'
+                isActive ? 'text-wood-dark' : 'text-ink/45 hover:text-ink/80'
               }`}
             >
               {/* Sliding glowing box cursor (RPG menu style) */}
@@ -38,8 +38,8 @@ export function BottomNav() {
                 <motion.div
                   layoutId="hud-cursor"
                   transition={{ type: 'spring', stiffness: 500, damping: 34 }}
-                  className="absolute inset-0 bg-coin-gold/10"
-                  style={{ boxShadow: 'inset 0 0 0 2px #f5c518' }}
+                  className="absolute inset-0 bg-[#8a5a2b]/15"
+                  style={{ boxShadow: 'inset 0 0 0 2px #8a5a2b' }}
                 />
               )}
 
@@ -53,7 +53,7 @@ export function BottomNav() {
 
               <span className="relative z-10 flex items-center gap-0.5">
                 {isActive && (
-                  <span className="font-pixel text-[0.4rem] text-coin-gold animate-blink">▶</span>
+                  <span className="font-pixel text-[0.4rem] text-coin-gold-deep animate-blink">▶</span>
                 )}
                 <span className="font-pixel text-[0.38rem] truncate">{tab.label}</span>
               </span>

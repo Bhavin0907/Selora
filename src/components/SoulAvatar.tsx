@@ -45,28 +45,28 @@ export function SoulAvatar({ mood, health, auraColor }: SoulAvatarProps) {
 
         {/* Segmented retro health bar */}
         <div className="mt-3 flex items-center gap-2">
-          <span className="font-pixel text-[0.45rem] text-white/60">HP</span>
-          <div className="flex gap-[2px] p-[3px] bg-black shadow-[0_0_0_2px_#000,inset_0_0_0_2px_#2a2a3e]">
+          <span className="font-pixel text-[0.45rem] text-ink/70">HP</span>
+          <div className="flex gap-[2px] p-[3px] bg-[#5e3c1a] shadow-[0_0_0_2px_#3a2410,inset_0_0_0_2px_#8a5a2b]">
             {Array.from({ length: SEGMENTS }).map((_, i) => (
               <div
                 key={i}
                 className="w-[10px] h-[14px]"
                 style={{
-                  background: i < filled ? auraColor : '#1a1a2e',
+                  background: i < filled ? auraColor : '#3a2a18',
                   boxShadow: i < filled ? 'inset 0 2px 0 rgba(255,255,255,0.35)' : 'none',
                 }}
               />
             ))}
           </div>
         </div>
-        <p className="font-pixel text-[0.45rem] text-white/50 mt-2">
+        <p className="font-pixel text-[0.45rem] text-ink/60 mt-2">
           {Math.round(health)}%
         </p>
 
         <button
           type="button"
           onClick={goEdit}
-          className="mt-3 font-pixel text-[0.45rem] px-2 py-1.5 bg-soul-violet text-black shadow-[0_0_0_2px_#000] active:translate-y-[1px]"
+          className="mt-3 font-pixel text-[0.45rem] px-2 py-1.5 bg-soul-violet text-[#fff7e0] shadow-[0_0_0_2px_#3a2410] active:translate-y-[1px]"
         >
           ✎ EDIT AVATAR
         </button>

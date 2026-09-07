@@ -32,19 +32,19 @@ export function PactPage() {
   return (
     <div className="space-y-4">
       <header>
-        <h1 className="text-2xl font-bold text-white">Pact & Leaderboard</h1>
-        <p className="text-sm text-white/50">Commit, compete, grow</p>
+        <h1 className="text-2xl font-bold text-ink">Pact & Leaderboard</h1>
+        <p className="text-sm text-ink/70">Commit, compete, grow</p>
       </header>
 
       {/* Weekly Pact */}
       <Card glow={pact.completed ? 'green' : 'gold'}>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-coin-gold">Weekly Savings Pact</h2>
+          <h2 className="text-sm font-semibold text-coin-gold-deep">Weekly Savings Pact</h2>
           {pact.completed && (
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="text-xs bg-heal-green/20 text-heal-green px-2 py-0.5 rounded-full"
+              className="text-xs bg-heal-green/20 text-heal-green px-2 py-0.5 shadow-[inset_0_0_0_2px_#2e9e4f55]"
             >
               🏅 Badge Earned!
             </motion.span>
@@ -57,31 +57,31 @@ export function PactPage() {
               type="number"
               value={newTarget}
               onChange={(e) => setNewTarget(e.target.value)}
-              className="flex-1 bg-vault-indigo border border-white/10 rounded-lg px-3 py-2 text-white"
+              className="flex-1 px-3 py-2"
             />
-            <button onClick={handleSaveTarget} className="px-3 py-2 bg-coin-gold text-vault-indigo rounded-lg font-semibold text-sm">Save</button>
+            <button onClick={handleSaveTarget} className="px-3 py-2 bg-coin-gold text-vault-indigo font-semibold text-sm shadow-[0_0_0_2px_#3a2410]">Save</button>
           </div>
         ) : (
-          <p className="text-white/60 text-sm mb-1">
-            Target: <button onClick={() => setEditingTarget(true)} className="text-coin-gold font-bold hover:underline">{formatINR(pact.targetAmount)}</button>
+          <p className="text-ink/70 text-sm mb-1">
+            Target: <button onClick={() => setEditingTarget(true)} className="text-coin-gold-deep font-bold hover:underline">{formatINR(pact.targetAmount)}</button>
           </p>
         )}
 
         <div className="mt-3">
-          <div className="flex justify-between text-xs text-white/50 mb-1">
+          <div className="flex justify-between text-xs text-ink/60 mb-1">
             <span>{formatINR(progress.saved)} saved</span>
             <span>{Math.round(progress.progress * 100)}%</span>
           </div>
-          <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-3 bg-[#8a5a2b]/25 overflow-hidden shadow-[inset_0_0_0_2px_#3a2410]">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-soul-violet to-heal-green"
+              className="h-full bg-gradient-to-r from-soul-violet to-heal-green"
               initial={{ width: 0 }}
               animate={{ width: `${progress.progress * 100}%` }}
               transition={{ duration: 0.8 }}
             />
           </div>
           {!pact.completed && progress.remaining > 0 && (
-            <p className="text-xs text-white/40 mt-2">{formatINR(progress.remaining)} to go</p>
+            <p className="text-xs text-ink/50 mt-2">{formatINR(progress.remaining)} to go</p>
           )}
         </div>
 
@@ -91,17 +91,17 @@ export function PactPage() {
             animate={{ opacity: 1 }}
             className="mt-3 text-sm text-heal-green"
           >
-            ✨ Pact fulfilled! Your Soul heals with pride.
+            ✨ Pact fulfilled! Your hero heals with pride.
           </motion.p>
         )}
 
         {pact.failed && !pact.completed && (
-          <div className="mt-3 p-3 rounded-xl bg-soul-violet/10 border border-soul-violet/30">
+          <div className="mt-3 p-3 bg-soul-violet/10 shadow-[inset_0_0_0_2px_#7a5bd055]">
             <p className="text-sm text-soul-violet font-medium">Gentle Redemption Quest</p>
-            <p className="text-xs text-white/60 mt-1">{getRedemptionQuest(pact)}</p>
+            <p className="text-xs text-ink/70 mt-1">{getRedemptionQuest(pact)}</p>
             <button
               onClick={resetPact}
-              className="mt-2 text-xs text-coin-gold hover:underline"
+              className="mt-2 text-xs text-coin-gold-deep hover:underline"
             >
               Start fresh this week →
             </button>
@@ -110,9 +110,9 @@ export function PactPage() {
       </Card>
 
       {/* Leaderboard */}
-      <Card>
+      <Card glow="violet">
         <h2 className="text-sm font-semibold text-soul-violet mb-1">Leaderboard</h2>
-        <p className="text-xs text-white/40 mb-4">
+        <p className="text-xs text-ink/50 mb-4">
           Ranked on verified savings only — spending never affects your rank
         </p>
 
@@ -123,23 +123,23 @@ export function PactPage() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.05 }}
-              className={`flex items-center gap-3 p-2.5 rounded-xl ${
+              className={`flex items-center gap-3 p-2.5 ${
                 entry.isUser
-                  ? 'bg-coin-gold/10 border border-coin-gold/30'
-                  : 'bg-white/5'
+                  ? 'bg-coin-gold/15 shadow-[inset_0_0_0_2px_#b5860b66]'
+                  : 'bg-[#8a5a2b]/10'
               }`}
             >
-              <span className="text-sm font-bold text-white/40 w-6 text-center">
+              <span className="text-sm font-bold text-ink/50 w-6 text-center">
                 {i + 1}
               </span>
               {entry.isUser ? (
-                <span className="block bg-[#0a0a0f] p-[2px] shadow-[0_0_0_2px_#000]">
+                <span className="block bg-[#d8f0ff] p-[2px] shadow-[0_0_0_2px_#3a2410]">
                   <Avatar config={avatar} size={28} />
                 </span>
               ) : (
                 <span className="text-xl">{entry.avatar}</span>
               )}
-              <span className={`flex-1 text-sm font-medium ${entry.isUser ? 'text-coin-gold' : 'text-white/80'}`}>
+              <span className={`flex-1 text-sm font-medium ${entry.isUser ? 'text-coin-gold-deep' : 'text-ink/80'}`}>
                 {entry.name}
               </span>
               <span className="text-sm font-semibold text-heal-green">
