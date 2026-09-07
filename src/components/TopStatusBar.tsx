@@ -8,6 +8,7 @@ import { getTotalSavings } from '../lib/stats'
 import { computeLevel } from '../lib/level'
 import { CoinIcon, FlameIcon } from './PixelIcon'
 import { RollingNumber } from './RollingNumber'
+import { PlayerMenu } from './PlayerMenu'
 import { sfx } from '../lib/sfx'
 
 export function TopStatusBar() {
@@ -102,6 +103,7 @@ export function TopStatusBar() {
           >
             CRT
           </button>
+          <PlayerMenu />
         </div>
       </div>
     </div>

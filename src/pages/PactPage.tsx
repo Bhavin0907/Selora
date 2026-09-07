@@ -2,15 +2,15 @@ import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { Card, formatINR } from '../components/Card'
 import { Avatar } from '../components/Avatar'
-import { buildLeaderboard } from '../lib/leaderboard'
 import { getPactProgress, getRedemptionQuest } from '../lib/pact'
-import { getTotalSavings } from '../lib/stats'
 import { useStore } from '../store/useStore'
+import { useLeaderboard } from '../lib/useLeaderboard'
+
+const RANK_MEDAL: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
 
 export function PactPage() {
   const pact = useStore((s) => s.pact)
   const savings = useStore((s) => s.savings)
-  const userName = useStore((s) => s.userName)
   const avatar = useStore((s) => s.avatar)
   const setPactTarget = useStore((s) => s.setPactTarget)
   const resetPact = useStore((s) => s.resetPact)
@@ -18,10 +18,7 @@ export function PactPage() {
   const [newTarget, setNewTarget] = useState(String(pact.targetAmount))
 
   const progress = useMemo(() => getPactProgress(pact, savings), [pact, savings])
-  const leaderboard = useMemo(
-    () => buildLeaderboard(getTotalSavings(savings), userName),
-    [savings, userName],
-  )
+  const { entries, userRank, userInTop, status } = useLeaderboard()
 
   const handleSaveTarget = () => {
     const num = parseInt(newTarget, 10)
@@ -111,42 +108,70 @@ export function PactPage() {
 
       {/* Leaderboard */}
       <Card glow="violet">
-        <h2 className="text-sm font-semibold text-soul-violet mb-1">Leaderboard</h2>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-sm font-semibold text-soul-violet">Leaderboard</h2>
+          <span className="font-pixel text-[0.4rem] px-1.5 py-1 bg-[#8a5a2b]/15 text-ink/60">
+            {status === 'cloud' ? '● LIVE' : status === 'loading' ? '…' : 'OFFLINE'}
+          </span>
+        </div>
         <p className="text-xs text-ink/50 mb-4">
           Ranked on verified savings only — spending never affects your rank
         </p>
 
+        {status === 'local' && (
+          <p className="text-xs text-ink/60 mb-3">
+            Playing offline — connect an account to compete on the real board.
+          </p>
+        )}
+
         <div className="space-y-2">
-          {leaderboard.map((entry, i) => (
-            <motion.div
-              key={entry.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className={`flex items-center gap-3 p-2.5 ${
-                entry.isUser
-                  ? 'bg-coin-gold/15 shadow-[inset_0_0_0_2px_#b5860b66]'
-                  : 'bg-[#8a5a2b]/10'
-              }`}
-            >
-              <span className="text-sm font-bold text-ink/50 w-6 text-center">
-                {i + 1}
-              </span>
-              {entry.isUser ? (
-                <span className="block bg-[#d8f0ff] p-[2px] shadow-[0_0_0_2px_#3a2410]">
-                  <Avatar config={avatar} size={28} />
-                </span>
-              ) : (
-                <span className="text-xl">{entry.avatar}</span>
-              )}
-              <span className={`flex-1 text-sm font-medium ${entry.isUser ? 'text-coin-gold-deep' : 'text-ink/80'}`}>
-                {entry.name}
-              </span>
-              <span className="text-sm font-semibold text-heal-green">
-                {formatINR(entry.verifiedSavings)}
-              </span>
-            </motion.div>
-          ))}
+          {entries.map((entry, i) => {
+            // When the user is outside the top slice, they're the last row and
+            // carry their true rank; everyone else uses their list position.
+            const isAppendedUser = !userInTop && i === entries.length - 1
+            const rank = isAppendedUser ? userRank ?? i + 1 : i + 1
+            return (
+              <div key={entry.id}>
+                {isAppendedUser && (
+                  <p className="text-center text-ink/40 text-sm py-1 select-none">⋯</p>
+                )}
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: Math.min(i, 8) * 0.04 }}
+                  className={`flex items-center gap-3 p-2.5 ${
+                    entry.isUser
+                      ? 'bg-coin-gold/15 shadow-[inset_0_0_0_2px_#b5860b66]'
+                      : 'bg-[#8a5a2b]/10'
+                  }`}
+                >
+                  <span className="text-sm font-bold text-ink/50 w-7 text-center">
+                    {RANK_MEDAL[rank] ?? rank}
+                  </span>
+                  {entry.isUser ? (
+                    <span className="block bg-[#d8f0ff] p-[2px] shadow-[0_0_0_2px_#3a2410]">
+                      <Avatar config={avatar} size={28} />
+                    </span>
+                  ) : (
+                    <span className="w-8 h-8 flex items-center justify-center bg-soul-violet/20 text-soul-violet font-pixel text-[0.6rem] shadow-[0_0_0_2px_#3a2410]">
+                      {entry.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <span
+                    className={`flex-1 text-sm font-medium truncate ${
+                      entry.isUser ? 'text-coin-gold-deep' : 'text-ink/80'
+                    }`}
+                  >
+                    {entry.name}
+                    {entry.isUser && <span className="text-ink/40"> (you)</span>}
+                  </span>
+                  <span className="text-sm font-semibold text-heal-green">
+                    {formatINR(entry.totalSavings)}
+                  </span>
+                </motion.div>
+              </div>
+            )
+          })}
         </div>
       </Card>
     </div>

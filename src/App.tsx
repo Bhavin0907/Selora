@@ -11,11 +11,15 @@ import { PactPage } from './pages/PactPage'
 import { CreatePage } from './pages/CreatePage'
 import { FxLayer } from './components/fx/FxLayer'
 import { CompanionOverlay } from './components/CompanionOverlay'
+import { BackendNotice } from './components/BackendNotice'
+import { AuthGate } from './components/auth/AuthGate'
+import { SyncManager } from './components/SyncManager'
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-full overworld-bg font-body">
+      <AuthGate>
+        <div className="min-h-full overworld-bg font-body">
         <TopStatusBar />
         <main className="max-w-lg mx-auto px-4 pt-4 pb-24">
           <Routes>
@@ -31,8 +35,11 @@ function App() {
         <BottomNav />
         <CompanionOverlay />
         <FxLayer />
+        <BackendNotice />
+        <SyncManager />
         <CrtOverlay />
-      </div>
+        </div>
+      </AuthGate>
     </BrowserRouter>
   )
 }

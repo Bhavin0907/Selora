@@ -51,14 +51,6 @@ export interface AdvisorTip {
   impact: number
 }
 
-export interface LeaderboardEntry {
-  id: string
-  name: string
-  verifiedSavings: number
-  isUser: boolean
-  avatar: string
-}
-
 export type TimeRange = 'week' | 'month'
 
 export type { AvatarConfig } from '../lib/avatar'
