@@ -430,6 +430,37 @@ textarea:focus {
 }
 
 /* ══════════════════════════════════════════
+   AVATAR (custom pixel character)
+   ══════════════════════════════════════════ */
+/* Idle bob — steps() keeps it choppy/retro */
+@keyframes avatar-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5%);
+  }
+}
+.avatar-bob {
+  animation: avatar-bob 2s steps(6) infinite;
+}
+
+/* Pulsing frame for the currently-selected creator option */
+@keyframes avatar-sel-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px #000, 0 0 0 4px #f5c518;
+  }
+  50% {
+    box-shadow: 0 0 0 2px #000, 0 0 0 4px #fff2ab;
+  }
+}
+.avatar-opt-selected {
+  animation: avatar-sel-pulse 0.9s steps(2) infinite;
+}
+
+/* ══════════════════════════════════════════
    ISOMETRIC WORLD MAP ANIMATIONS
    ══════════════════════════════════════════ */
 @keyframes star-tw {

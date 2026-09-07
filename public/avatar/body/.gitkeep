@@ -1,0 +1,2 @@
+# Drop real 32x32 PNGs here named <id>.png (e.g. reg.png, slim.png, buff.png, round.png).
+# They override the generated SVG placeholders automatically — no code changes needed.

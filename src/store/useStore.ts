@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Saving, Spend, WeeklyPact } from '../types'
+import type { AvatarConfig, Saving, Spend, WeeklyPact } from '../types'
 import { createDefaultPact, evaluatePact, resetPactForNewWeek } from '../lib/pact'
+import { DEFAULT_AVATAR, normalizeAvatar } from '../lib/avatar'
 import {
   createSeedSavings,
   createSeedSpends,
@@ -19,6 +20,7 @@ interface SeloraState {
   recentReasons: string[]
   pact: WeeklyPact
   userName: string
+  avatar: AvatarConfig
   seeded: boolean
 
   addSpend: (amount: number, location: string, reason: string) => void
@@ -27,6 +29,7 @@ interface SeloraState {
   addReason: (reason: string) => void
   setPactTarget: (amount: number) => void
   resetPact: () => void
+  setAvatar: (avatar: AvatarConfig) => void
 }
 
 function genId(): string {
@@ -76,6 +79,7 @@ export const useStore = create<SeloraState>()(
       recentReasons: [],
       pact: createDefaultPact(),
       userName: 'You',
+      avatar: DEFAULT_AVATAR,
       seeded: false,
 
       addSpend: (amount, location, reason) => {
@@ -143,6 +147,10 @@ export const useStore = create<SeloraState>()(
           pact: resetPactForNewWeek(s.pact.targetAmount),
         }))
       },
+
+      setAvatar: (avatar) => {
+        set({ avatar: normalizeAvatar(avatar) })
+      },
     }),
     {
       name: 'selora-storage',
@@ -155,6 +163,7 @@ export const useStore = create<SeloraState>()(
         recentReasons: state.recentReasons,
         pact: state.pact,
         userName: state.userName,
+        avatar: state.avatar,
         seeded: state.seeded,
       }),
       merge: (persisted, current) => {
@@ -165,6 +174,7 @@ export const useStore = create<SeloraState>()(
           ...p,
           spends: mergeById(p.spends ?? [], current.spends),
           savings: mergeById(p.savings ?? [], current.savings),
+          avatar: normalizeAvatar(p.avatar),
         }
       },
       onRehydrateStorage: () => (state, error) => {

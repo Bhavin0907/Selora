@@ -8,6 +8,7 @@ import { MapPage } from './pages/MapPage'
 import { InsightsPage } from './pages/InsightsPage'
 import { AdvisorPage } from './pages/AdvisorPage'
 import { PactPage } from './pages/PactPage'
+import { CreatePage } from './pages/CreatePage'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/insights" element={<InsightsPage />} />
             <Route path="/advisor" element={<AdvisorPage />} />
             <Route path="/pact" element={<PactPage />} />
+            <Route path="/create" element={<CreatePage />} />
           </Routes>
         </main>
         <BottomNav />

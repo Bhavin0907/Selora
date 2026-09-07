@@ -60,3 +60,5 @@ export interface LeaderboardEntry {
 }
 
 export type TimeRange = 'week' | 'month'
+
+export type { AvatarConfig } from '../lib/avatar'

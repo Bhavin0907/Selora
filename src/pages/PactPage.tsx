@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { Card, formatINR } from '../components/Card'
+import { Avatar } from '../components/Avatar'
 import { buildLeaderboard } from '../lib/leaderboard'
 import { getPactProgress, getRedemptionQuest } from '../lib/pact'
 import { getTotalSavings } from '../lib/stats'
@@ -10,6 +11,7 @@ export function PactPage() {
   const pact = useStore((s) => s.pact)
   const savings = useStore((s) => s.savings)
   const userName = useStore((s) => s.userName)
+  const avatar = useStore((s) => s.avatar)
   const setPactTarget = useStore((s) => s.setPactTarget)
   const resetPact = useStore((s) => s.resetPact)
   const [editingTarget, setEditingTarget] = useState(false)
@@ -130,7 +132,13 @@ export function PactPage() {
               <span className="text-sm font-bold text-white/40 w-6 text-center">
                 {i + 1}
               </span>
-              <span className="text-xl">{entry.avatar}</span>
+              {entry.isUser ? (
+                <span className="block bg-[#0a0a0f] p-[2px] shadow-[0_0_0_2px_#000]">
+                  <Avatar config={avatar} size={28} />
+                </span>
+              ) : (
+                <span className="text-xl">{entry.avatar}</span>
+              )}
               <span className={`flex-1 text-sm font-medium ${entry.isUser ? 'text-coin-gold' : 'text-white/80'}`}>
                 {entry.name}
               </span>

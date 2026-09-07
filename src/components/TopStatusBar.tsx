@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { useUiStore } from '../store/useUiStore'
+import { Avatar } from './Avatar'
 import { computeSavingsStreak } from '../lib/streak'
 import { getTotalSavings } from '../lib/stats'
 import { computeLevel } from '../lib/level'
@@ -10,6 +12,8 @@ import { sfx } from '../lib/sfx'
 
 export function TopStatusBar() {
   const savings = useStore((s) => s.savings)
+  const avatar = useStore((s) => s.avatar)
+  const navigate = useNavigate()
 
   const { streak, total, level } = useMemo(() => {
     const total = getTotalSavings(savings)
@@ -34,6 +38,19 @@ export function TopStatusBar() {
   return (
     <div className="sticky top-0 z-40 bg-[#0a0a0f] shadow-[inset_0_-3px_0_#f5c518,inset_0_-5px_0_#000]">
       <div className="max-w-lg mx-auto flex items-center justify-between gap-2 px-3 py-2">
+        {/* Avatar portrait — tap to edit */}
+        <button
+          type="button"
+          onClick={() => {
+            sfx.blip()
+            navigate('/create')
+          }}
+          title="Edit avatar"
+          className="shrink-0 bg-[#0a0a0f] p-[2px] shadow-[0_0_0_2px_#000,inset_0_0_0_2px_#2a2a3e] active:translate-y-[1px] overflow-hidden"
+        >
+          <Avatar config={avatar} size={26} />
+        </button>
+
         {/* Level */}
         <div className="flex items-center gap-1.5">
           <span className="font-pixel text-[0.5rem] text-soul-violet pixel-shadow-sm">LVL</span>
