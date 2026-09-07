@@ -7,6 +7,7 @@ import {
   useStore,
 } from '../store/useStore'
 import { anchorOf, fx } from '../lib/fx'
+import { computeSoulState } from '../lib/soul'
 
 type LogMode = 'spend' | 'save'
 
@@ -102,6 +103,18 @@ export function LogPage() {
       kind: mode === 'save' ? 'save' : 'spend',
       amount: num,
       anchor: anchorOf(submitRef.current),
+    })
+
+    // Companion reaction thought bubble:
+    const updatedSpends = useStore.getState().spends
+    const updatedSavings = useStore.getState().savings
+    const currentMood = computeSoulState(updatedSpends, updatedSavings).mood
+
+    fx.emit('companionThought', {
+      kind: mode === 'save' ? 'save' : 'spend',
+      mood: currentMood,
+      amount: num,
+      reason: mode === 'spend' ? reason.trim() : undefined,
     })
 
     resetForm()

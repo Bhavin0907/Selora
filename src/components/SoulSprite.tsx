@@ -13,6 +13,9 @@ import type { SoulMood } from '../types'
 interface SoulSpriteProps {
   mood: SoulMood
   size?: number
+  showAura?: boolean
+  showShadow?: boolean
+  className?: string
 }
 
 // Base body silhouette shared by all moods (each row is exactly 16 chars).
@@ -226,7 +229,13 @@ const MOOD_RANK: Record<SoulMood, number> = {
   thriving: 3,
 }
 
-export function SoulSprite({ mood, size = 140 }: SoulSpriteProps) {
+export function SoulSprite({
+  mood,
+  size = 140,
+  showAura = true,
+  showShadow = true,
+  className,
+}: SoulSpriteProps) {
   const aura = MOOD_AURA[mood]
   const [pngOk, setPngOk] = useState(true)
   const [reaction, setReaction] = useState<'up' | 'down' | null>(null)
@@ -257,28 +266,35 @@ export function SoulSprite({ mood, size = 140 }: SoulSpriteProps) {
       : 'soul-react-down'
     : `soul-idle-${mood}`
 
-  const showBurst = reaction === 'up' || mood === 'thriving'
+  const showBurst = (reaction === 'up' || mood === 'thriving') && showAura
 
   return (
-    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+    <div
+      className={`relative flex items-center justify-center ${className ?? ''}`}
+      style={{ width: size, height: size }}
+    >
       {/* Aura glow ring (sprite FX, allowed to be soft) */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: `radial-gradient(circle at 50% 45%, ${aura}44 0%, ${aura}18 45%, transparent 70%)`,
-        }}
-      />
-      <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" aria-hidden="true">
-        <circle
-          cx="50"
-          cy="47"
-          r="42"
-          fill="none"
-          stroke={aura}
-          strokeOpacity="0.45"
-          strokeWidth="1.5"
-        />
-      </svg>
+      {showAura && (
+        <>
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(circle at 50% 45%, ${aura}44 0%, ${aura}18 45%, transparent 70%)`,
+            }}
+          />
+          <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" aria-hidden="true">
+            <circle
+              cx="50"
+              cy="47"
+              r="42"
+              fill="none"
+              stroke={aura}
+              strokeOpacity="0.45"
+              strokeWidth="1.5"
+            />
+          </svg>
+        </>
+      )}
 
       {/* Sprite stack */}
       <div className={idleClass} style={{ width: '72%', height: '72%' }}>
@@ -338,16 +354,18 @@ export function SoulSprite({ mood, size = 140 }: SoulSpriteProps) {
       )}
 
       {/* Hard pixel shadow ellipse */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2"
-        style={{
-          bottom: '4%',
-          width: '46%',
-          height: '8%',
-          background: '#000000',
-          opacity: 0.5,
-        }}
-      />
+      {showShadow && (
+        <div
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{
+            bottom: '4%',
+            width: '46%',
+            height: '8%',
+            background: '#000000',
+            opacity: 0.5,
+          }}
+        />
+      )}
     </div>
   )
 }

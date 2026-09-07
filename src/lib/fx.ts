@@ -4,6 +4,8 @@
  * the global <FxLayer/> that RENDERS it. No deps; presentation-only.
  */
 
+import type { SoulMood } from '../types'
+
 export interface Anchor {
   x: number
   y: number
@@ -13,6 +15,12 @@ export interface FxEvents {
   coins: { kind: 'save' | 'spend'; amount: number; anchor?: Anchor }
   soulBurst: { anchor?: Anchor }
   levelUp: { level: number }
+  companionThought: {
+    kind: 'save' | 'spend'
+    mood: SoulMood
+    amount: number
+    reason?: string
+  }
 }
 
 type Handler<T> = (payload: T) => void
