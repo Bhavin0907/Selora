@@ -9,6 +9,7 @@ import { InsightsPage } from './pages/InsightsPage'
 import { AdvisorPage } from './pages/AdvisorPage'
 import { PactPage } from './pages/PactPage'
 import { CreatePage } from './pages/CreatePage'
+import { FxLayer } from './components/fx/FxLayer'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           </Routes>
         </main>
         <BottomNav />
+        <FxLayer />
         <CrtOverlay />
       </div>
     </BrowserRouter>

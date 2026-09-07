@@ -3,36 +3,26 @@ import type { BuildingState } from '../../types'
 import { formatINR } from '../Card'
 import { Avatar } from '../Avatar'
 import { useStore } from '../../store/useStore'
+import {
+  MONUMENT,
+  VH,
+  VW,
+  avatarSlot,
+  placeBuildings,
+  type Pt,
+} from '../../lib/overworldLayout'
 
 /**
- * OverworldMap — a bright, original 16-bit style world map.
+ * OverworldMap — a bright, original 16-bit style world map (2D SVG).
  *
  * Green islands on a blue ocean, warm daytime sky, winding dotted trails
  * connecting spending LOCATIONS as map nodes. Each node's landmark reflects
  * its spend health (cottage → house → dark fortress). A golden savings tree
  * grows at the top. The user's avatar stands on the most-recent node.
  *
- * Purely presentational: all data comes from the deterministic building
- * formulas — nothing here mutates game state.
+ * This is also the guaranteed fallback for the 3D scene, so it shares the same
+ * layout constants (see lib/overworldLayout). Purely presentational.
  */
-
-const VW = 360
-const VH = 340
-
-type Pt = { x: number; y: number }
-
-// Winding trail of node slots (bottom entrance → up toward the tree)
-const SLOTS: Pt[] = [
-  { x: 78, y: 280 },
-  { x: 152, y: 258 },
-  { x: 98, y: 210 },
-  { x: 190, y: 196 },
-  { x: 258, y: 220 },
-  { x: 296, y: 168 },
-  { x: 214, y: 146 },
-  { x: 138, y: 124 },
-]
-const MONUMENT: Pt = { x: 204, y: 74 }
 
 // ── Island landform (grass blob with a brown cliff rim) ──────
 function Island() {
@@ -289,13 +279,7 @@ export function OverworldMap({
   const avatarCfg = useStore((s) => s.avatar)
 
   // Assign active buildings (biggest spend first) to trail slots.
-  const placements = useMemo(() => {
-    return [...buildings]
-      .filter((b) => b.totalSpend > 0)
-      .sort((a, b) => b.totalSpend - a.totalSpend)
-      .slice(0, SLOTS.length)
-      .map((building, i) => ({ building, pos: SLOTS[i] }))
-  }, [buildings])
+  const placements = useMemo(() => placeBuildings(buildings), [buildings])
 
   // Trail path: through nodes (in slot order) then up to the tree.
   const trailD = useMemo(() => {
@@ -305,10 +289,10 @@ export function OverworldMap({
   }, [placements])
 
   // Where the avatar stands (most recent activity → fallback to first node).
-  const avatarPos = useMemo(() => {
-    const cur = placements.find((p) => p.building.location === currentLocation)
-    return (cur ?? placements[0])?.pos ?? { x: SLOTS[0].x, y: SLOTS[0].y }
-  }, [placements, currentLocation])
+  const avatarPos = useMemo(
+    () => avatarSlot(placements, currentLocation),
+    [placements, currentLocation],
+  )
 
   // Draw landmarks back-to-front (higher on screen first).
   const drawOrder = useMemo(

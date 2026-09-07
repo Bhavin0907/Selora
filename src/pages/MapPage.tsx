@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 import { Card } from '../components/Card'
 import { computeBuildings } from '../lib/map'
 import { getAllLocations, useStore } from '../store/useStore'
-import { MapErrorBoundary } from '../components/Map3D/MapErrorBoundary'
-import { OverworldMap } from '../components/IsoWorld/OverworldMap'
+import { MapView } from '../components/IsoWorld/MapView'
 
 export function MapPage() {
   const spends = useStore((s) => s.spends)
@@ -26,6 +25,18 @@ export function MapPage() {
   const isEmpty = totalSpend === 0
   const currentLocation = spends[0]?.location
 
+  // Entrance greeting for the world avatar, derived from existing state only:
+  // whichever activity is most recent (big spend ≥ ₹2000 reads as worried).
+  const greeting = useMemo<'save' | 'spend' | 'bigspend' | 'none'>(() => {
+    const lastSpend = spends[0]
+    const lastSaving = savings[0]
+    if (!lastSpend && !lastSaving) return 'none'
+    const saveNewer = (lastSaving?.timestamp ?? -1) >= (lastSpend?.timestamp ?? -1)
+    if (saveNewer && lastSaving) return 'save'
+    if (lastSpend) return lastSpend.amount >= 2000 ? 'bigspend' : 'spend'
+    return 'none'
+  }, [spends, savings])
+
   return (
     <div className="space-y-4">
       <header>
@@ -34,21 +45,14 @@ export function MapPage() {
       </header>
 
       <Card glow="green" className="!p-1 overflow-hidden">
-        <MapErrorBoundary
-          fallback={
-            <div className="h-[300px] flex items-center justify-center">
-              <p className="font-body text-lg text-danger-red">Map failed to load</p>
-            </div>
-          }
-        >
-          <OverworldMap
-            buildings={activeBuildings}
-            totalSpend={totalSpend}
-            totalSavings={totalSavings}
-            isEmpty={isEmpty}
-            currentLocation={currentLocation}
-          />
-        </MapErrorBoundary>
+        <MapView
+          buildings={activeBuildings}
+          totalSpend={totalSpend}
+          totalSavings={totalSavings}
+          isEmpty={isEmpty}
+          currentLocation={currentLocation}
+          greeting={greeting}
+        />
       </Card>
 
       <Card>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Card } from '../components/Card'
 import {
@@ -6,6 +6,7 @@ import {
   getSortedReasons,
   useStore,
 } from '../store/useStore'
+import { anchorOf, fx } from '../lib/fx'
 
 type LogMode = 'spend' | 'save'
 
@@ -27,6 +28,7 @@ export function LogPage() {
   const [showAddReason, setShowAddReason] = useState(false)
   const [newLocation, setNewLocation] = useState('')
   const [newReason, setNewReason] = useState('')
+  const submitRef = useRef<HTMLButtonElement>(null)
 
   const addSpend = useStore((s) => s.addSpend)
   const addSaving = useStore((s) => s.addSaving)
@@ -94,6 +96,13 @@ export function LogPage() {
     } else {
       addSaving(num, note.trim() || undefined)
     }
+
+    // Coin-arc feedback (A2): coins arc up from the button + "+₹X" pixel text.
+    fx.emit('coins', {
+      kind: mode === 'save' ? 'save' : 'spend',
+      amount: num,
+      anchor: anchorOf(submitRef.current),
+    })
 
     resetForm()
     triggerSuccess()
@@ -268,6 +277,7 @@ export function LogPage() {
           )}
 
           <button
+            ref={submitRef}
             type="submit"
             className={`w-full py-3 font-semibold text-vault-indigo transition-transform active:scale-[0.98] ${
               mode === 'save' ? 'bg-heal-green glow-green' : 'bg-coin-gold glow-gold'

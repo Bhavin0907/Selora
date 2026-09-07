@@ -1,16 +1,36 @@
 import { motion } from 'framer-motion'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { SoulAvatar } from '../components/SoulAvatar'
 import { Card } from '../components/Card'
 import { computeSoulState } from '../lib/soul'
 import { useStore } from '../store/useStore'
 import { formatINR } from '../lib/stats'
+import { anchorOf, fx } from '../lib/fx'
+import type { SoulMood } from '../types'
+
+const MOOD_RANK: Record<SoulMood, number> = {
+  distressed: 0,
+  worried: 1,
+  content: 2,
+  thriving: 3,
+}
 
 export function HomePage() {
   const spends = useStore((s) => s.spends)
   const savings = useStore((s) => s.savings)
 
   const soul = useMemo(() => computeSoulState(spends, savings), [spends, savings])
+
+  // A3: sparkle/coin burst around the soul when its mood improves.
+  const soulRef = useRef<HTMLDivElement>(null)
+  const prevMood = useRef<SoulMood | null>(null)
+  useEffect(() => {
+    const prev = prevMood.current
+    if (prev && MOOD_RANK[soul.mood] > MOOD_RANK[prev]) {
+      fx.emit('soulBurst', { anchor: anchorOf(soulRef.current) })
+    }
+    prevMood.current = soul.mood
+  }, [soul.mood])
 
   return (
     <div className="space-y-4">
@@ -20,7 +40,9 @@ export function HomePage() {
       </header>
 
       <Card glow="green" className="flex flex-col items-center py-6">
-        <SoulAvatar mood={soul.mood} health={soul.health} auraColor={soul.auraColor} />
+        <div ref={soulRef}>
+          <SoulAvatar mood={soul.mood} health={soul.health} auraColor={soul.auraColor} />
+        </div>
       </Card>
 
       <Card glow="violet">
