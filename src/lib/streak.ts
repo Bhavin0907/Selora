@@ -32,3 +32,70 @@ export function computeConsistency(savings: Saving[]): number {
   }
   return Math.round((daysWithDeposit / 7) * 100)
 }
+
+export interface DepositCalendarCell {
+  date: string
+  dayOfWeek: number
+  hasDeposit: boolean
+  depositCount: number
+  totalAmount: number
+  label: string
+}
+
+export interface DepositCalendarSummary {
+  cells: DepositCalendarCell[]
+  activeDays: number
+  totalSaved: number
+  activePercent: number
+  currentStreak: number
+}
+
+/**
+ * Generates a 30-day chronological grid for deposit consistency heatmap.
+ */
+export function getDepositCalendarGrid(
+  savings: Saving[],
+  daysCount: number = 30,
+): DepositCalendarSummary {
+  const depositMap = new Map<string, { count: number; total: number }>()
+  for (const s of savings) {
+    const existing = depositMap.get(s.date) ?? { count: 0, total: 0 }
+    depositMap.set(s.date, { count: existing.count + 1, total: existing.total + s.amount })
+  }
+
+  const cells: DepositCalendarCell[] = []
+  let activeDays = 0
+  let totalSaved = 0
+
+  for (let i = daysCount - 1; i >= 0; i--) {
+    const dateStr = daysAgo(i)
+    const d = new Date(dateStr)
+    const dayOfWeek = d.getDay()
+    const entry = depositMap.get(dateStr)
+    const hasDeposit = !!entry && entry.count > 0
+    const count = entry?.count ?? 0
+    const total = entry?.total ?? 0
+
+    if (hasDeposit) {
+      activeDays++
+      totalSaved += total
+    }
+
+    cells.push({
+      date: dateStr,
+      dayOfWeek,
+      hasDeposit,
+      depositCount: count,
+      totalAmount: total,
+      label: `${d.toLocaleString('en-US', { month: 'short' })} ${d.getDate()}`,
+    })
+  }
+
+  return {
+    cells,
+    activeDays,
+    totalSaved,
+    activePercent: Math.round((activeDays / daysCount) * 100),
+    currentStreak: computeSavingsStreak(savings),
+  }
+}
