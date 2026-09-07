@@ -748,3 +748,69 @@ textarea:focus {
     opacity: 0;
   }
 }
+
+/* ══════════════════════════════════════════
+   RETRO GPS MAP STYLING (Leaflet overrides)
+   ══════════════════════════════════════════ */
+.retro-gps-frame {
+  position: relative;
+  box-shadow:
+    0 0 0 3px #3a2410,
+    0 0 0 6px #8a5a2b,
+    0 0 0 8px #3a2410;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-container {
+  font-family: var(--font-body) !important;
+  background: #a4c4db !important;
+  border-radius: 0 !important;
+  image-rendering: pixelated;
+}
+
+.leaflet-tile {
+  filter: saturate(1.1) contrast(1.05);
+}
+
+.leaflet-control-attribution {
+  background: rgba(247, 230, 189, 0.88) !important;
+  color: #5e3c1a !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.85rem !important;
+  box-shadow: 0 0 0 1px #3a2410;
+  border-radius: 0 !important;
+  margin: 4px !important;
+  padding: 1px 6px !important;
+}
+.leaflet-control-attribution a {
+  color: #8a5a2b !important;
+  font-weight: bold;
+}
+
+.leaflet-control-zoom a {
+  border-radius: 0 !important;
+  background: #f7e6bd !important;
+  color: #3a2410 !important;
+  border: 1px solid #3a2410 !important;
+  font-family: var(--font-pixel) !important;
+  font-size: 0.7rem !important;
+  font-weight: bold !important;
+}
+.leaflet-control-zoom a:hover {
+  background: #ffe680 !important;
+}
+
+@keyframes gps-pulse-ring {
+  0%, 100% {
+    box-shadow: 0 0 0 2px #3a2410, 0 0 0 4px #f5c518;
+  }
+  50% {
+    box-shadow: 0 0 0 2px #3a2410, 0 0 0 7px #ffe27a;
+  }
+}
+
+.gps-pin-near {
+  animation: gps-pulse-ring 0.9s steps(3) infinite;
+}
+
