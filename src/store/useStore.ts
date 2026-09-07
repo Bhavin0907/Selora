@@ -22,6 +22,8 @@ interface SeloraState {
   userName: string
   avatar: AvatarConfig
   seeded: boolean
+  /** User-pinned GPS coords per spending location (map presentation only). */
+  locationPins: Record<string, { lat: number; lng: number }>
 
   addSpend: (amount: number, location: string, reason: string) => void
   addSaving: (amount: number, note?: string) => void
@@ -30,6 +32,7 @@ interface SeloraState {
   setPactTarget: (amount: number) => void
   resetPact: () => void
   setAvatar: (avatar: AvatarConfig) => void
+  setLocationPin: (location: string, lat: number, lng: number) => void
 }
 
 function genId(): string {
@@ -81,6 +84,7 @@ export const useStore = create<SeloraState>()(
       userName: 'You',
       avatar: DEFAULT_AVATAR,
       seeded: false,
+      locationPins: {},
 
       addSpend: (amount, location, reason) => {
         const spend: Spend = {
@@ -151,6 +155,12 @@ export const useStore = create<SeloraState>()(
       setAvatar: (avatar) => {
         set({ avatar: normalizeAvatar(avatar) })
       },
+
+      setLocationPin: (location, lat, lng) => {
+        set((s) => ({
+          locationPins: { ...s.locationPins, [location]: { lat, lng } },
+        }))
+      },
     }),
     {
       name: 'selora-storage',
@@ -165,6 +175,7 @@ export const useStore = create<SeloraState>()(
         userName: state.userName,
         avatar: state.avatar,
         seeded: state.seeded,
+        locationPins: state.locationPins,
       }),
       merge: (persisted, current) => {
         const p = persisted as Partial<SeloraState> | undefined

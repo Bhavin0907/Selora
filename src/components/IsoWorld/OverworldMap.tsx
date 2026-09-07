@@ -266,6 +266,8 @@ interface OverworldMapProps {
   totalSavings: number
   isEmpty: boolean
   currentLocation?: string
+  /** When provided, selection is controlled by MapPage (shared dialog). */
+  onSelect?: (b: BuildingState) => void
 }
 
 export function OverworldMap({
@@ -274,8 +276,10 @@ export function OverworldMap({
   totalSavings,
   isEmpty,
   currentLocation,
+  onSelect,
 }: OverworldMapProps) {
-  const [selected, setSelected] = useState<BuildingState | null>(null)
+  const [internalSelected, setInternalSelected] = useState<BuildingState | null>(null)
+  const controlled = !!onSelect
   const avatarCfg = useStore((s) => s.avatar)
 
   // Assign active buildings (biggest spend first) to trail slots.
@@ -372,7 +376,7 @@ export function OverworldMap({
           <g
             key={p.building.location}
             style={{ cursor: 'pointer' }}
-            onClick={() => setSelected(p.building)}
+            onClick={() => (onSelect ? onSelect(p.building) : setInternalSelected(p.building))}
           >
             <g className="ow-bob">
               <Landmark building={p.building} pos={p.pos} />
@@ -414,21 +418,21 @@ export function OverworldMap({
         </div>
       )}
 
-      {/* SNES message box on node tap */}
-      {selected && (
+      {/* SNES message box on node tap (only when not controlled externally) */}
+      {!controlled && internalSelected && (
         <div className="absolute left-3 right-3 bottom-3 retro-panel retro-panel--gold">
           <div className="flex justify-between items-start gap-2">
             <div className="min-w-0">
               <p className="font-pixel text-[0.6rem] text-wood-dark pixel-shadow-sm">
-                {selected.location.toUpperCase()}
+                {internalSelected.location.toUpperCase()}
               </p>
-              <p className="font-body text-xl text-ink mt-1">{formatINR(selected.totalSpend)}</p>
-              <p className="font-body text-base text-ink/60">{pct(selected)}% of total spending</p>
-              <p className="font-body text-base text-ink/80 mt-1 leading-tight">{selected.tip}</p>
+              <p className="font-body text-xl text-ink mt-1">{formatINR(internalSelected.totalSpend)}</p>
+              <p className="font-body text-base text-ink/60">{pct(internalSelected)}% of total spending</p>
+              <p className="font-body text-base text-ink/80 mt-1 leading-tight">{internalSelected.tip}</p>
             </div>
             <button
               type="button"
-              onClick={() => setSelected(null)}
+              onClick={() => setInternalSelected(null)}
               className="font-pixel text-[0.6rem] text-wood-dark hover:text-ink shrink-0"
             >
               X

@@ -1,16 +1,26 @@
-import { useRef, useState, useMemo } from 'react'
+import { useRef, useState, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { OrbitControls, Stars, Html, Grid } from '@react-three/drei'
+import { OrbitControls, Html, Grid } from '@react-three/drei'
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import * as THREE from 'three'
 import type { BuildingState } from '../../types'
 import { buildingPosition, savingsToMonumentScale, spendToHeight3D } from '../../lib/map3d'
-import { formatINR } from '../../lib/stats'
+import { Avatar } from '../Avatar'
+import { useStore } from '../../store/useStore'
+
+export interface CityControlsApi {
+  recenter: () => void
+}
 
 interface CitySceneProps {
   buildings: BuildingState[]
   totalSpend: number
   totalSavings: number
   isEmpty: boolean
+  currentLocation?: string
+  reduced: boolean
+  onSelect: (b: BuildingState) => void
+  controlsApi: { current: CityControlsApi | null }
 }
 
 interface BuildingMeshProps {
@@ -200,24 +210,18 @@ function FloatingIsland() {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
         <cylinderGeometry args={[4.5, 4.8, 0.3, 32]} />
-        <meshStandardMaterial color="#1a1a3e" roughness={0.8} />
+        <meshStandardMaterial color="#8a5a2b" roughness={0.8} flatShading />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, 0]}>
-        <ringGeometry args={[4.2, 4.5, 64]} />
-        <meshStandardMaterial
-          color="#9b5de5"
-          emissive="#9b5de5"
-          emissiveIntensity={0.5}
-          transparent
-          opacity={0.6}
-        />
+        <cylinderGeometry args={[4.5, 4.5, 0.08, 32]} />
+        <meshStandardMaterial color="#5fbf3f" roughness={0.7} flatShading />
       </mesh>
       <Grid
         position={[0, 0.08, 0]}
         args={[9, 9]}
         cellSize={0.5}
         cellThickness={0.4}
-        cellColor="#9b5de540"
+        cellColor="#2e7d3240"
         sectionSize={2}
         sectionThickness={0.8}
         sectionColor="#f5c51830"
@@ -228,60 +232,56 @@ function FloatingIsland() {
   )
 }
 
-function AmbientParticles() {
-  const ref = useRef<THREE.Points>(null)
-  const count = 80
-  const positions = useMemo(() => {
-    const arr = new Float32Array(count * 3)
-    for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 20
-      arr[i * 3 + 1] = Math.random() * 10 + 2
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 20
-    }
-    return arr
-  }, [])
-
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * 0.02
-    }
-  })
-
-  return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-      </bufferGeometry>
-      <pointsMaterial size={0.06} color="#f5c518" transparent opacity={0.6} sizeAttenuation />
-    </points>
-  )
-}
-
-export function CityScene({ buildings, totalSpend, totalSavings, isEmpty }: CitySceneProps) {
-  const [selected, setSelected] = useState<BuildingState | null>(null)
+export function CityScene({
+  buildings,
+  totalSavings,
+  isEmpty,
+  currentLocation,
+  reduced,
+  onSelect,
+  controlsApi,
+}: CitySceneProps) {
   const islandRef = useRef<THREE.Group>(null)
+  const controlsRef = useRef<OrbitControlsImpl | null>(null)
+  const avatar = useStore((s) => s.avatar)
+  const HOME_CAM = useMemo(() => new THREE.Vector3(8, 7, 8), [])
+
+  useEffect(() => {
+    controlsApi.current = {
+      recenter: () => {
+        if (controlsRef.current) {
+          controlsRef.current.object.position.copy(HOME_CAM)
+          controlsRef.current.target.set(0, 0.5, 0)
+          controlsRef.current.update()
+        }
+      },
+    }
+    return () => {
+      controlsApi.current = null
+    }
+  }, [controlsApi, HOME_CAM])
 
   useFrame((state) => {
-    if (islandRef.current) {
-      islandRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.08
+    if (islandRef.current && !reduced) {
+      islandRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.06
     }
   })
 
-  const pct =
-    selected && totalSpend > 0 ? Math.round((selected.totalSpend / totalSpend) * 100) : 0
+  const avatarPos = useMemo(() => {
+    const idx = buildings.findIndex((b) => b.location === currentLocation)
+    const i = idx >= 0 ? idx : 0
+    return buildingPosition(i, Math.max(buildings.length, 1))
+  }, [buildings, currentLocation])
 
   return (
     <>
-      <color attach="background" args={['#12122a']} />
-      <fog attach="fog" args={['#12122a', 12, 28]} />
+      <color attach="background" args={['#8fd0f2']} />
+      <fog attach="fog" args={['#bfe3ff', 14, 30]} />
 
+      <hemisphereLight args={['#cfeeff', '#6b8f3a', 0.65]} />
       <ambientLight intensity={0.35} />
-      <directionalLight position={[5, 10, 5]} intensity={0.8} castShadow color="#fff5e0" />
-      <pointLight position={[-4, 6, -4]} intensity={0.5} color="#9b5de5" />
-      <pointLight position={[4, 4, 4]} intensity={0.3} color="#f5c518" />
-
-      <Stars radius={30} depth={20} count={1200} factor={3} saturation={0.4} fade speed={0.5} />
-      <AmbientParticles />
+      <directionalLight position={[5, 10, 5]} intensity={1.1} castShadow color="#ffe9c2" />
+      <directionalLight position={[-4, 4, -4]} intensity={0.35} color="#bfe3ff" />
 
       <group ref={islandRef}>
         <FloatingIsland />
@@ -292,44 +292,35 @@ export function CityScene({ buildings, totalSpend, totalSavings, isEmpty }: City
             key={building.location}
             building={building}
             position={buildingPosition(i, buildings.length)}
-            onSelect={setSelected}
+            onSelect={onSelect}
           />
         ))}
+
+        {buildings.length > 0 && (
+          <Html position={[avatarPos[0], 1.1, avatarPos[2]]} center distanceFactor={9}>
+            <div style={{ pointerEvents: 'none' }}>
+              <Avatar config={avatar} size={36} bob={!reduced} />
+            </div>
+          </Html>
+        )}
       </group>
 
       {isEmpty && (
         <Html position={[0, 2.5, 0]} center>
-          <div className="text-center px-4 py-3 rounded-xl bg-vault-indigo/90 border border-soul-violet/30 max-w-[220px] pointer-events-none">
-            <p className="text-sm text-white/80 leading-snug">
+          <div className="retro-panel retro-panel--blue text-center max-w-[220px] pointer-events-none">
+            <p className="font-body text-sm text-ink leading-snug">
               Your city is waiting — log a spend to build it
             </p>
           </div>
         </Html>
       )}
 
-      {selected && (
-        <Html position={[0, 4.5, 0]} center style={{ pointerEvents: 'auto' }}>
-          <div className="w-[240px] p-3 rounded-xl bg-vault-indigo/95 border border-coin-gold/30 shadow-lg">
-            <div className="flex justify-between items-start mb-2">
-              <p className="font-semibold text-coin-gold text-sm">{selected.location}</p>
-              <button
-                type="button"
-                onClick={() => setSelected(null)}
-                className="text-white/40 hover:text-white text-lg leading-none -mt-0.5"
-              >
-                ×
-              </button>
-            </div>
-            <p className="text-white text-lg font-bold">{formatINR(selected.totalSpend)}</p>
-            <p className="text-xs text-white/50 mt-0.5">{pct}% of total spending</p>
-            <p className="text-xs text-white/70 mt-2 leading-relaxed">{selected.tip}</p>
-          </div>
-        </Html>
-      )}
-
       <OrbitControls
-        autoRotate
-        autoRotateSpeed={0.6}
+        ref={controlsRef}
+        autoRotate={!reduced}
+        autoRotateSpeed={0.45}
+        enableDamping
+        dampingFactor={0.08}
         enablePan={false}
         minPolarAngle={Math.PI / 6}
         maxPolarAngle={Math.PI / 2.4}
